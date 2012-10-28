@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="helpers.Character.Race"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="helpers.Ability"/>
+<fullyQualifiedTypeName name="helpers.Account"/>
+<fullyQualifiedTypeName name="helpers.Character"/>
+<fullyQualifiedTypeName name="helpers.Item"/>
+<fullyQualifiedTypeName name="helpers.Skill"/>
+<fullyQualifiedTypeName name="javax.swing.JPanel"/>
+<fullyQualifiedTypeName name="javax.swing.JButton"/>
+<fullyQualifiedTypeName name="java.awt.event.ActionListener"/>
+<fullyQualifiedTypeName name="java.awt.event.ActionEvent"/>
+<fullyQualifiedTypeName name="java.awt.BorderLayout"/>
+<fullyQualifiedTypeName name="javax.swing.JTextField"/>
+</qualifiedTypeNameHistroy>

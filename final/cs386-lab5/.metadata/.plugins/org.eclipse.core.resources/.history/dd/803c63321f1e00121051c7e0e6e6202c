@@ -1,0 +1,116 @@
+package gui;
+
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import helpers.Ability;
+import helpers.Account;
+import helpers.Character;
+import helpers.Item;
+import helpers.Skill;
+
+
+
+public class GUI extends JFrame{
+	private static final long serialVersionUID = 1L;
+	private static JPanel mainPanel;
+	
+	public GUI() {
+
+		final JFrame myFrame = new JFrame("RPGame Database Prototype");		
+		myFrame.setLayout(new BorderLayout());
+		myFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		
+		mainPanel = new JPanel(new BorderLayout());
+		ImageIcon icon = new ImageIcon("rpgame.jpg");
+		JLabel image = new JLabel(icon);
+		mainPanel.setSize(800, 600);
+		mainPanel.add(image, BorderLayout.CENTER);
+		
+		myFrame.add(mainPanel, BorderLayout.CENTER);
+		
+		//menubar
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menu; 
+		JMenuItem menuItem;
+		
+		//Import menu
+		menu = new JMenu("Import");
+		menuBar.add(menu);
+		
+		menuItem = new JMenuItem("Select Import File");
+		menuItem.setToolTipText("Choose the file you would like to import database data from.");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				
+				
+				//TODO import from file code
+			}
+		});
+		menu.add(menuItem);
+		
+		//Mode menu
+		menu = new JMenu("Mode");
+		menuBar.add(menu);
+		
+		//Admin mode
+		menuItem = new JMenuItem("Admin Mode");
+		menuItem.setToolTipText("Enter System Administrator Mode.");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				//TODO admin mode
+				myFrame.remove(mainPanel);
+				JPanel mainPanel = new JPanel(new GridLayout(1,2));
+				mainPanel.setSize(800, 600);
+				JPanel topPanel = new JPanel(new GridLayout(1,5));
+				JButton account = new JButton("Account");
+				JButton character = new JButton("Character");
+				JButton item = new JButton("Item");
+				JButton skill = new JButton("Skill");
+				JButton ability = new JButton("Ability");
+				
+				topPanel.add(account);
+				topPanel.add(character);
+				topPanel.add(item);
+				topPanel.add(skill);
+				topPanel.add(ability);
+				
+				//adminPanel.add(topPanel);
+				myFrame.add(topPanel, BorderLayout.NORTH);
+				//myFrame.add(mainPanel, BorderLayout.CENTER);
+				myFrame.repaint();
+			}
+		});
+		menu.add(menuItem);
+		
+		//User mode
+		menuItem = new JMenuItem("User Mode");
+		menuItem.setToolTipText("Enter System User Mode.");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				//TODO user mode
+			}
+		});
+		menu.add(menuItem);
+		
+		
+		//myFrame.pack();
+		myFrame.setSize(800,600);
+		myFrame.setJMenuBar(menuBar);
+		myFrame.setResizable(false);
+		myFrame.setVisible(true);
+	}
+	
+	public static void main(String args[]) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception ignored) {}
+		new GUI();
+	}
+}

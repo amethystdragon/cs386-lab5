@@ -1,17 +1,35 @@
 package main;
 
+import gui.ability.AddAbility;
+import gui.ability.DeleteAbility;
+import gui.ability.EditAbility;
+import gui.character.AddCharacter;
+import gui.character.DeleteCharacter;
+import gui.character.EditCharacter;
+import gui.item.AddItem;
+import gui.item.DeleteItem;
+import gui.item.EditItem;
+import gui.skill.AddSkill;
+import gui.skill.DeleteSkill;
+import gui.skill.EditSkill;
 import gui.user.AddUser;
+import gui.user.DeleteUser;
+import gui.user.EditUser;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
@@ -22,6 +40,7 @@ import javax.swing.WindowConstants;
 public class HerosWindow extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private JPanel center = null;
 
 	public HerosWindow() {
 		//Setup the window
@@ -32,7 +51,12 @@ public class HerosWindow extends JFrame {
 		//Adds the menu bar
 		generateMenu();
 		this.add(createSideBar(),BorderLayout.WEST);
-		this.add(new AddUser(), BorderLayout.CENTER);
+		//Add the image
+		ImageIcon image = new ImageIcon("opening.jpg");
+		center = new JPanel(new GridLayout(1,1));
+		center.setBackground(new Color(255,255,240));
+		center.add(new JLabel(image));
+		this.add(center, BorderLayout.CENTER);
 		this.setVisible(true);
 	}
 	
@@ -41,10 +65,21 @@ public class HerosWindow extends JFrame {
 		
 		//Creates the file menu
 		JMenu file = new JMenu("File");
+		//Adds a import data option
+		JMenuItem importFromFile = new JMenuItem("Import");
+		importFromFile.setActionCommand("Import");
+		importFromFile.addActionListener(new MenuListener());
+		file.add(importFromFile);
+		//Adds a save data option
 		JMenuItem save = new JMenuItem("Save");
+		save.setActionCommand("Save");
+		save.addActionListener(new MenuListener());
 		file.add(save);
 		file.addSeparator(); //Gotta keep 'em seperated.
+		//Adds an exit option
 		JMenuItem exit = new JMenuItem("Exit");
+		exit.setActionCommand("Exit");
+		exit.addActionListener(new MenuListener());
 		file.add(exit);
 		menuBar.add(file);
 		
@@ -71,12 +106,18 @@ public class HerosWindow extends JFrame {
 		JMenu menu = new JMenu(name);
 		//Creates the add button
 		JMenuItem add = new JMenuItem("Add "+name);
+		add.addActionListener(new MenuListener());
+		add.setActionCommand("Add"+name);
 		menu.add(add);
 		//Creates the edit button
 		JMenuItem edit = new JMenuItem("Edit "+name);
+		edit.addActionListener(new MenuListener());
+		edit.setActionCommand("Edit"+name);
 		menu.add(edit);
 		//Creates the delete button
 		JMenuItem delete = new JMenuItem("Delete "+name);
+		delete.addActionListener(new MenuListener());
+		delete.setActionCommand("Delete"+name);
 		menu.add(delete);
 		
 		return menu;
@@ -122,13 +163,174 @@ public class HerosWindow extends JFrame {
 	}
 	
 	private JPanel functions(String name){
+		//Add function
 		JPanel func = new JPanel(new GridLayout(1, 3));
 		JButton add = new JButton("Add");
+		add.addActionListener(new ButtonListener());
+		add.setActionCommand("Add"+name);
 		func.add(add);
+		//Edit function
 		JButton edit = new JButton("Edit");
+		edit.addActionListener(new ButtonListener());
+		edit.setActionCommand("Edit"+name);
 		func.add(edit);
+		//Delete function
 		JButton delete = new JButton("Delete");
+		delete.addActionListener(new ButtonListener());
+		delete.setActionCommand("Delete"+name);
 		func.add(delete);
 		return func;
+	}
+	
+	private class MenuListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String command = e.getActionCommand();
+			switch(command){
+			case "AddUser":
+				center.removeAll();
+				center.add(new AddUser(), BorderLayout.CENTER);
+				break;
+			case "EditUser":
+				center.removeAll();
+				center.add(new EditUser(), BorderLayout.CENTER);
+				break;
+			case "DeleteUser":
+				center.removeAll();
+				center.add(new DeleteUser(), BorderLayout.CENTER);
+				break;
+			case "AddCharacter":
+				center.removeAll();
+				center.add(new AddCharacter(), BorderLayout.CENTER);
+				break;
+			case "EditCharacter":
+				center.removeAll();
+				center.add(new EditCharacter(), BorderLayout.CENTER);
+				break;
+			case "DeleteCharacter":
+				center.removeAll();
+				center.add(new DeleteCharacter(), BorderLayout.CENTER);
+				break;
+			case "AddItem":
+				center.removeAll();
+				center.add(new AddItem(), BorderLayout.CENTER);
+				break;
+			case "EditItem":
+				center.removeAll();
+				center.add(new EditItem(), BorderLayout.CENTER);
+				break;
+			case "DeleteItem":
+				center.removeAll();
+				center.add(new DeleteItem(), BorderLayout.CENTER);
+				break;
+			case "AddAbility":
+				center.removeAll();
+				center.add(new AddAbility(), BorderLayout.CENTER);
+				break;
+			case "EditAbility":
+				center.removeAll();
+				center.add(new EditAbility(), BorderLayout.CENTER);
+				break;
+			case "DeleteAbility":
+				center.removeAll();
+				center.add(new DeleteAbility(), BorderLayout.CENTER);
+				break;
+			case "AddSkill":
+				center.removeAll();
+				center.add(new AddSkill(), BorderLayout.CENTER);
+				break;
+			case "EditSkill":
+				center.removeAll();
+				center.add(new EditSkill(), BorderLayout.CENTER);
+				break;
+			case "DeleteSkill":
+				center.removeAll();
+				center.add(new DeleteSkill(), BorderLayout.CENTER);
+				break;
+			case "Exit":
+				System.exit(0);
+				break;
+			case "Save":
+				JOptionPane.showMessageDialog(null, "This functionallity is not completed at this time");
+				break;
+			case "Import":
+				JOptionPane.showMessageDialog(null, "This functionallity is not completed at this time");
+				break;
+			default:
+				break;
+			}
+			validate();
+		}
+	}
+	private class ButtonListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String command = e.getActionCommand();
+			switch(command){
+			case "AddUser":
+				center.removeAll();
+				center.add(new AddUser(), BorderLayout.CENTER);
+				break;
+			case "EditUser":
+				center.removeAll();
+				center.add(new EditUser(), BorderLayout.CENTER);
+				break;
+			case "DeleteUser":
+				center.removeAll();
+				center.add(new DeleteUser(), BorderLayout.CENTER);
+				break;
+			case "AddCharacter":
+				center.removeAll();
+				center.add(new AddCharacter(), BorderLayout.CENTER);
+				break;
+			case "EditCharacter":
+				center.removeAll();
+				center.add(new EditCharacter(), BorderLayout.CENTER);
+				break;
+			case "DeleteCharacter":
+				center.removeAll();
+				center.add(new DeleteCharacter(), BorderLayout.CENTER);
+				break;
+			case "AddItem":
+				center.removeAll();
+				center.add(new AddItem(), BorderLayout.CENTER);
+				break;
+			case "EditItem":
+				center.removeAll();
+				center.add(new EditItem(), BorderLayout.CENTER);
+				break;
+			case "DeleteItem":
+				center.removeAll();
+				center.add(new DeleteItem(), BorderLayout.CENTER);
+				break;
+			case "AddAbility":
+				center.removeAll();
+				center.add(new AddAbility(), BorderLayout.CENTER);
+				break;
+			case "EditAbility":
+				center.removeAll();
+				center.add(new EditAbility(), BorderLayout.CENTER);
+				break;
+			case "DeleteAbility":
+				center.removeAll();
+				center.add(new DeleteAbility(), BorderLayout.CENTER);
+				break;
+			case "AddSkill":
+				center.removeAll();
+				center.add(new AddSkill(), BorderLayout.CENTER);
+				break;
+			case "EditSkill":
+				center.removeAll();
+				center.add(new EditSkill(), BorderLayout.CENTER);
+				break;
+			case "DeleteSkill":
+				center.removeAll();
+				center.add(new DeleteSkill(), BorderLayout.CENTER);
+				break;
+			default:
+				break;
+			}
+			validate();
+		}
 	}
 }

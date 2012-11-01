@@ -13,9 +13,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
-public class DataAccess implements DataAccessInterface {
+public class DataAccess {
 	/**
 	 * Stores the connection to the MySQL server
 	 */
@@ -155,125 +156,286 @@ public class DataAccess implements DataAccessInterface {
 		return instance;
 	}
 
-	@Override
-	public List<Account> searchUser(String username, String fname,
-			String lname, String email) {
-		// TODO Auto-generated method stub
+	//SEARCH 
+	/**
+	 * 
+	 * @author Will
+	 * 
+	 * @param username
+	 * @param fname
+	 * @param lname
+	 * @param email
+	 * @return
+	 */
+	public List<Account> searchUser(String username, String fname, String lname, String email){
+		//TODO
 		return null;
 	}
 
-	@Override
-	public List<Character> searchCharacter(String name, Race race,
-			String username) {
-		// TODO Auto-generated method stub
+	/**
+	 * 
+	 * @author Karl
+	 * 
+	 * @param name
+	 * @param race
+	 * @param username
+	 * @return
+	 */
+	public List<Character> searchCharacter(String name, Character.Race race, String username){
+		String query = "SELECT `name`,`race`,`model`,`strength`,`constitution`,`intelligence`,`wisdom`,`agility`,`dexterity`,`level`,`experience`,`accountID` FROM `Character`";
+		if(!name.isEmpty() && race!=null && !username.isEmpty()){
+			boolean first = true;
+			query += " WHERE ";
+			if(!name.isEmpty()){
+				query += "`name`='"+name+"'";
+				if(first) first = false;
+			}
+			if(race!=null){
+				if(first) first = false;
+				else query += " AND ";
+				query += "`race`='"+name+"'";
+			}
+			if(!username.isEmpty()){
+				if(!first) query += " AND ";
+				query += "`account_account_ID`=(SELECT `account_ID` FROM `Account` WHERE `account_name`='"+name+"')";
+			}
+		}
+		
+		List<Character> characters = null;
+		try {
+			ResultSet result = query(query);
+			characters = new ArrayList<Character>();
+			while(result.next()){
+				characters.add(new Character(result.getString(2), 
+						Race.valueOf(result.getString(3)), 
+						result.getString(4), 
+						Integer.parseInt(result.getString(5)), 
+						Integer.parseInt(result.getString(6)),
+						Integer.parseInt(result.getString(7)),
+						Integer.parseInt(result.getString(8)),
+						Integer.parseInt(result.getString(9)),
+						Integer.parseInt(result.getString(10)),
+						Integer.parseInt(result.getString(11)),
+						Integer.parseInt(result.getString(12)),
+						Integer.parseInt(result.getString(13))));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return characters;
+	}
+
+	/**
+	 * 
+	 * @author Karl
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public List<Item> searchItem(String name, Item.Rarity rarity, String ability){
+		//TODO
 		return null;
 	}
 
-	@Override
-	public List<Item> searchItem(String name, Rarity rarity, String ability) {
-		// TODO Auto-generated method stub
+	/**
+	 - Malcolm
+	 * @param name
+	 * @param level
+	 * @return
+	 */
+	public List<Skill> searchSkill(String name, String level){
+		//TODO
 		return null;
 	}
 
-	@Override
-	public List<Skill> searchSkill(String name, String level) {
-		// TODO Auto-generated method stub
+
+	/**
+	 * Joe
+	 * @param name
+	 * @param level
+	 * @return
+	 */
+	public List<Ability> searchAbility(String name, int level){
+		//TODO
 		return null;
 	}
 
-	@Override
-	public List<Ability> searchAbility(String name, int level) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	//ADD
 
-	@Override
-	public boolean addUser(String username, Account user) {
-		// TODO Auto-generated method stub
+	/**
+	 * Will
+	 * @param username
+	 * @param user
+	 * @return
+	 */
+	public boolean addUser(String username, Account user){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean addCharacter(String name, Character Character) {
-		// TODO Auto-generated method stub
+
+	/**
+	 * Karl
+	 * @param name
+	 * @param Character
+	 * @return
+	 */
+	public boolean addCharacter(String name, Character Character){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean addItem(String name, Item item) {
-		// TODO Auto-generated method stub
+
+	/**
+	 * Karl
+	 * @param name
+	 * @param item
+	 * @return
+	 */
+	public boolean addItem(String name, Item item){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean addSkill(String name, Skill skill) {
-		// TODO Auto-generated method stub
+	/**
+	 * Malcolm
+	 * @param name
+	 * @param skill
+	 * @return
+	 */
+	public boolean addSkill(String name, Skill skill){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean addAbility(String name, Ability ability) {
-		// TODO Auto-generated method stub
+	/**
+	 * Joe
+	 * @param name
+	 * @param ability
+	 * @return
+	 */
+	public boolean addAbility(String name, Ability ability){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean editUser(String username, Account user) {
-		// TODO Auto-generated method stub
+
+	//EDIT
+	/**
+	 * Will
+	 * @param username
+	 * @param user
+	 * @return
+	 */
+	public boolean editUser(String username, Account user){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean editCharacter(String name, Character Character) {
-		// TODO Auto-generated method stub
+
+	/**
+	 * Karl
+	 * @param name
+	 * @param Character
+	 * @return
+	 */
+	public boolean editCharacter(String name, Character Character){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean editItem(String name, Item item) {
-		// TODO Auto-generated method stub
+
+	/**
+	 * Karl
+	 * @param name
+	 * @param item
+	 * @return
+	 */
+	public boolean editItem(String name, Item item){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean editSkill(String name, Skill skill) {
-		// TODO Auto-generated method stub
+	/**
+	 * Malcolm
+	 * @param name
+	 * @param skill
+	 * @return
+	 */
+	public boolean editSkill(String name, Skill skill){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean editAbility(String name, Ability ability) {
-		// TODO Auto-generated method stub
+	/**
+	 * Joe
+	 * @param name
+	 * @param ability
+	 * @return
+	 */
+	public boolean editAbility(String name, Ability ability){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean deleteUser(String username) {
-		// TODO Auto-generated method stub
+
+
+	//DELETE
+	/**
+	 * Will
+	 * @param username
+	 * @param user
+	 * @return
+	 */
+	public boolean deleteUser(String username){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean deleteCharacter(String name) {
-		// TODO Auto-generated method stub
+
+	/**
+	 * Karl
+	 * @param name
+	 * @param Character
+	 * @return
+	 */
+	public boolean deleteCharacter(String name){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean deleteItem(String name) {
-		// TODO Auto-generated method stub
+
+	/**
+	 * Karl
+	 * @param name
+	 * @param item
+	 * @return
+	 */
+	public boolean deleteItem(String name){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean deleteSkill(String name) {
-		// TODO Auto-generated method stub
+	/**
+	 * Malcolm
+	 * @param name
+	 * @param skill
+	 * @return
+	 */
+	public boolean deleteSkill(String name){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean deleteAbility(String name) {
-		// TODO Auto-generated method stub
+	/**
+	 * Joe
+	 * @param name
+	 * @param ability
+	 * @return
+	 */
+	public boolean deleteAbility(String name){
+		//TODO
 		return false;
 	}
 }

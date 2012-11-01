@@ -1,5 +1,8 @@
 package helpers;
 
+import gui.GUI;
+import gui.GUI.ObjectType;
+
 public class Ability {
 	//ID of Ability - primary key - unique
 	private int ID;
@@ -127,5 +130,9 @@ public class Ability {
 	
 	public int getLevelRequirement(){
 		return this.level;
+	}
+
+	public ObjectType getType() {
+		return GUI.ObjectType.ABILITY;
 	}
 }

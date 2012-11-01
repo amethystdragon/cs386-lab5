@@ -1,10 +1,19 @@
 package dataAccess;
 
+import helpers.Ability;
+import helpers.Account;
+import helpers.Character;
+import helpers.Character.Race;
+import helpers.Item;
+import helpers.Item.Rarity;
+import helpers.Skill;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 public class DataAccess implements DataAccessInterface {
 	/**
@@ -144,5 +153,127 @@ public class DataAccess implements DataAccessInterface {
 		if (instance == null)
 			instance = new DataAccess(); // Create the instance
 		return instance;
+	}
+
+	@Override
+	public List<Account> searchUser(String username, String fname,
+			String lname, String email) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Character> searchCharacter(String name, Race race,
+			String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Item> searchItem(String name, Rarity rarity, String ability) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Skill> searchSkill(String name, String level) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Ability> searchAbility(String name, int level) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean addUser(String username, Account user) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addCharacter(String name, Character Character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addItem(String name, Item item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addSkill(String name, Skill skill) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addAbility(String name, Ability ability) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean editUser(String username, Account user) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean editCharacter(String name, Character Character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean editItem(String name, Item item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean editSkill(String name, Skill skill) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean editAbility(String name, Ability ability) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteUser(String username) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteCharacter(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteItem(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteSkill(String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteAbility(String name) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

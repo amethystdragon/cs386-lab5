@@ -1,5 +1,8 @@
 package helpers;
 
+import gui.GUI;
+import gui.GUI.ObjectType;
+
 public class Skill {
 	
 	//id of skill primary key
@@ -119,5 +122,9 @@ public class Skill {
 	
 	public int getLevelRequirement(){
 		return this.level;
+	}
+
+	public ObjectType getType() {
+		return GUI.ObjectType.SKILL;
 	}
 }

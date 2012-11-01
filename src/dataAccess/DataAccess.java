@@ -27,15 +27,15 @@ public class DataAccess implements DataAccessInterface {
 	/**
 	 * Stores the database name to connect to.
 	 */
-	private String mydatabase = "Timeshares";
+	private String mydatabase = "mydb";
 	/**
 	 * Stores the password to connect to the database with
 	 */
-	private String password = "R78933jGtCKAWczM";
+	private String password = "password";
 	/**
 	 * Stores the server name
 	 */
-	private String serverName = "localhost";
+	private String serverName = "155.92.107.132";
 	/**
 	 * Stores and executes MySQL statements
 	 */
@@ -47,7 +47,7 @@ public class DataAccess implements DataAccessInterface {
 	/**
 	 * Stores the username to connect to the database with
 	 */
-	private String username = "TimeshareUser";
+	private String username = "root";
 
 	private static DataAccess instance;
 

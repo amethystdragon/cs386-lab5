@@ -12,9 +12,6 @@ public class Character {
 		Human, Elf, Dwarf, Hobbit, Gnome
 	}
 	
-	//character ID - primary key - unique
-	private int ID;
-	
 	//character name - NON-unique
 	private String name;
 	
@@ -54,9 +51,8 @@ public class Character {
 	/**
 	 * private Constructor
 	 */
-	private Character(int ID, String name, Race race, String model, int strength,
+	public Character(String name, Race race, String model, int strength,
 			int constitution, int intelligence, int wisdom, int agility, int dexterity, int level, int experience, int accountID){
-		this.ID = ID;
 		this.name = name;
 		this.race = race;
 		this.model = model;
@@ -215,7 +211,7 @@ public class Character {
 	
 	//***Public Accessors***//
 	public int getID(){
-		return this.ID;
+		return 0;//TODO this.ID;
 	}
 	
 	public String getName(){

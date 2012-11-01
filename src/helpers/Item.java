@@ -1,7 +1,10 @@
 package helpers;
 
-public class Item {
+import gui.GUI;
+import gui.GUI.ObjectType;
 
+public class Item {
+	
 	public enum Rarity{
 		Common, Uncommon, Rare, Mythic, Legendary, Unique
 	}
@@ -30,9 +33,6 @@ public class Item {
 	//model used to display item
 	private String model;
 	
-	//weight of item
-	private int weight;
-	
 	//value from 0-100 of "wear" on item, items decriment refinement occasionally when used
 	//and cannot be used while refinement = 0, "repairing" items is a game mechanic which restores
 	//this value to 100
@@ -44,7 +44,7 @@ public class Item {
 	/**
 	 * private constructor
 	 */
-	private Item(int ID, String name, int damage, int armor, int level, Rarity rarity, int value, String model, int weight, int refinement, int abilityID){
+	private Item(int ID, String name, int damage, int armor, int level, Rarity rarity, int value, String model, int refinement, int abilityID){
 		this.ID = ID;
 		this.name = name;
 		this.damage = damage;
@@ -53,7 +53,6 @@ public class Item {
 		this.rarity = rarity;
 		this.value = value;
 		this.model = model;
-		this.weight = weight;
 		this.refinement = refinement;
 		this.ability_ID = abilityID;
 	}
@@ -175,10 +174,6 @@ public class Item {
 		return this.model;
 	}
 	
-	public int getWeight(){
-		return this.weight;
-	}
-	
 	public int getRefinement(){
 		return this.refinement;
 	}
@@ -187,5 +182,9 @@ public class Item {
 		Ability ability = null;
 		Ability.findAbility(this.ability_ID);
 		return ability;
+	}
+
+	public ObjectType getType() {
+		return GUI.ObjectType.ITEM;
 	}
 }

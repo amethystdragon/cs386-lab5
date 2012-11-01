@@ -1,5 +1,9 @@
 package helpers;
 
+import gui.GUI;
+import gui.GUI.ObjectType;
+
+import java.util.LinkedList;
 import java.util.List;
 
 public class Character {
@@ -16,9 +20,6 @@ public class Character {
 	
 	//character race
 	private Race race;
-	
-	//character age
-	private int age;
 	
 	//character model
 	private String model;
@@ -53,12 +54,11 @@ public class Character {
 	/**
 	 * private Constructor
 	 */
-	private Character(int ID, String name, Race race, int age, String model, int strength,
+	private Character(int ID, String name, Race race, String model, int strength,
 			int constitution, int intelligence, int wisdom, int agility, int dexterity, int level, int experience, int accountID){
 		this.ID = ID;
 		this.name = name;
 		this.race = race;
-		this.age = age;
 		this.model = model;
 		this.strength = strength;
 		this.constitution = constitution;
@@ -133,21 +133,10 @@ public class Character {
 	 * @param name
 	 * @return
 	 */
-	public static List<Character> findCharacters(String name){
-		List<Character> results = null;
+	public static Character findCharacters(String name){
+		Character results = null;
 		//TODO sql command to find all chars by name
 		return results;
-	}
-	
-	/**
-	 * increment age of character +1
-	 * @return - true if success else false
-	 */
-	public boolean incrementAge(){
-		boolean incremented = false;
-		//TODO sql command to increment age + 1 in database
-		//if successful this.age++ and incremented = true
-		return incremented;
 	}
 	
 	/**
@@ -201,6 +190,18 @@ public class Character {
 		return parent;
 	}
 	
+	public List<Item> getItems(){
+		List<Item> items = new LinkedList<Item>();
+		//TODO get items sql commands
+		return items;
+	}
+	
+	public List<Skill> getSkills(){
+		List<Skill> skills = new LinkedList<Skill>();
+		//TODO get skills sql commands
+		return skills;
+	}
+	
 	/**
 	 * finds next unused ID for primary key
 	 * @return - next valid new id key
@@ -223,10 +224,6 @@ public class Character {
 	
 	public String getRace(){
 		return this.race.toString();
-	}
-	
-	public int getAge(){
-		return this.age;
 	}
 	
 	public String getModel(){
@@ -273,5 +270,9 @@ public class Character {
 	
 	public int getAccountID(){
 		return this.accountID;
+	}
+
+	public ObjectType getType() {
+		return GUI.ObjectType.CHARACTER;
 	}
 }

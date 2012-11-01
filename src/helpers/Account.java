@@ -1,5 +1,8 @@
 package helpers;
 
+import gui.GUI;
+import gui.GUI.ObjectType;
+
 public class Account {
 	//id of account - primary key - unique
 	private int ID;
@@ -160,6 +163,10 @@ public class Account {
 		return this.ID;
 	}
 	
+	public String getPassword(){
+		return this.password;
+	}
+	
 	public String getAccountName(){
 		return this.account_name;
 	}
@@ -178,5 +185,9 @@ public class Account {
 	
 	public int getCurrency(){
 		return this.ingame_currency;
+	}
+
+	public ObjectType getType() {
+		return GUI.ObjectType.ACCOUNT;
 	}
 }

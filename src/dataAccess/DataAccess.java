@@ -266,7 +266,7 @@ public class DataAccess {
 						Rarity.valueOf(result.getString(5)), 
 						Integer.parseInt(result.getString(6)), 
 						result.getString(7), 
-						result.getString(9)));
+						null));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -361,7 +361,7 @@ public class DataAccess {
 		"'"+item.getRarity()+"', " +
 		"'"+item.getValue()+"', " +
 		"'"+item.getModel()+"', " +
-		"(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbilityName()+"'))";
+		"(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbility().getName()+"'))";
 		
 		try {
 			return execute(query);
@@ -452,7 +452,7 @@ public class DataAccess {
 			"', `rarity`='" +item.getRarity()+
 			"', `value`='" +item.getValue()+
 			"', `model`='" +item.getModel()+
-			"', `abilitiy_ability_ID`='(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbilityName()+"')"+
+			"', `abilitiy_ability_ID`='(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbility().getName()+"')"+
 			"' WHERE `name`='" +name+"'";
 		try {
 			return execute(query);

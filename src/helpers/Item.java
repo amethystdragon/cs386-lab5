@@ -2,6 +2,7 @@ package helpers;
 
 import gui.GUI;
 import gui.GUI.ObjectType;
+import helpers.Item.Rarity;
 
 public class Item {
 	
@@ -32,12 +33,12 @@ public class Item {
 	
 	
 	//id of associated ability
-	private Ability ability;
+	private String abilityName;
 	
 	/**
 	 * private constructor
 	 */
-	public Item(String name, int damage, int armor, int level, Rarity rarity, int value, String model, Ability ability){
+	public Item(String name, int damage, int armor, int level, Rarity rarity, int value, String model, String abilityID){
 		this.name = name;
 		this.damage = damage;
 		this.armor = armor;
@@ -45,7 +46,7 @@ public class Item {
 		this.rarity = rarity;
 		this.value = value;
 		this.model = model;
-		this.ability = ability;
+		this.abilityName = abilityID;
 	}
 	
 	public static boolean addItem(String name, int damage, int armor, int level, Rarity rarity, int value, String model, int weight, int refinement, int abilityID){
@@ -83,8 +84,7 @@ public class Item {
 	 * @return - true if deleted else false
 	 */
 	public static boolean deleteItem(Item item){
-		//TODO
-		return false;
+		return false; // TODO deleteItem(item.getID());
 	}
 	
 	/**
@@ -162,10 +162,8 @@ public class Item {
 	}
 	
 	
-	public Ability getAbility(){
-		Ability ability = null;
-		Ability.findAbility(this.ability.getName());
-		return ability;
+	public String getAbilityName(){
+		return this.abilityName;
 	}
 
 	public ObjectType getType() {

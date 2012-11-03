@@ -952,7 +952,7 @@ public class DisplayPanel {
 		
 		subPanel = new JPanel(new GridLayout(1,3));
 		subPanel.add(new JLabel("  Ability"));
-		field = new JTextField(item.getAbility().getName());
+		field = new JTextField(item.getAbilityName());
 		field.setEditable(false);
 		subPanel.add(field);
 		JButton displayAbility = new JButton("Display Ability");

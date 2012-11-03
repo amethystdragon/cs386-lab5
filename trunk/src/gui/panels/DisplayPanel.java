@@ -10,14 +10,19 @@ import helpers.Skill;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
+
+import dataAccess.DataAccess;
 
 public class DisplayPanel {
 	private static JPanel displayPanel;
@@ -85,7 +90,46 @@ public class DisplayPanel {
 				panel = new JPanel(new GridLayout(1,3));
 				//add, edit & delete buttons
 				JButton add = new JButton("CREATE ACCOUNT");
-				//TODO edit.addActionListener()
+				add.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent ae) {
+						try{
+							  JTextField userNameField = new JTextField(30);
+						      JTextField passwordField = new JTextField(30);
+						      JTextField emailField = new JTextField(30);
+						      JTextField fNameField = new JTextField(30);
+						      JTextField lNameField = new JTextField(30);
+						      JTextField currencyField = new JTextField(30);
+						      
+						      JPanel myPanel = new JPanel(new GridLayout(6,2));
+						      myPanel.add(new JLabel("UserName:"));
+						      myPanel.add(userNameField);
+						      myPanel.add(new JLabel("Password:"));
+						      myPanel.add(passwordField);
+						      myPanel.add(new JLabel("Email:"));
+						      myPanel.add(emailField);
+						      myPanel.add(new JLabel("First Name:"));
+						      myPanel.add(fNameField);
+						      myPanel.add(new JLabel("Last Name:"));
+						      myPanel.add(lNameField);
+						      myPanel.add(new JLabel("Currency:"));
+						      myPanel.add(currencyField);
+
+						      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+						               "Please Enter Account to Create", JOptionPane.OK_CANCEL_OPTION);
+						      if (result == JOptionPane.OK_OPTION) {
+						    	  Account addAccount = new Account(
+						    			  userNameField.getText(), passwordField.getText(),
+						    			  emailField.getText(), fNameField.getText(),
+						    			  lNameField.getText(), Integer.parseInt(currencyField.getText()));
+						    	  if(DataAccess.getInstance().addUser(addAccount)){
+								      DisplayPanel.setDisplayPanel(addAccount);
+						    	  }
+						      }
+							GUI.getGUI().updateMainPanel();
+						}catch(Exception e){}
+					}
+				});
 				panel.add(add);
 				JButton edit = new JButton("EDIT ACCOUNT");
 				panel.add(edit);
@@ -534,7 +578,7 @@ public class DisplayPanel {
 			topPanel.add(panel);
 			panel = new JPanel(new GridLayout(1,2));
 			panel.add(new JLabel("  Ingame Currency"));
-			field = new JTextField(account.getCurrency());
+			field = new JTextField(Integer.toString(account.getCurrency()));
 			field.setEditable(false);
 			panel.add(field);
 			topPanel.add(panel);

@@ -46,13 +46,13 @@ public class Character {
 	private int experience;
 	
 	//owner account id
-	private int accountID;
+	private String accountUsername;
 	
 	/**
 	 * private Constructor
 	 */
 	public Character(String name, Race race, String model, int strength,
-			int constitution, int intelligence, int wisdom, int agility, int dexterity, int level, int experience, int accountID){
+			int constitution, int intelligence, int wisdom, int agility, int dexterity, int level, int experience, String accountID){
 		this.name = name;
 		this.race = race;
 		this.model = model;
@@ -64,7 +64,7 @@ public class Character {
 		this.dexterity = dexterity;
 		this.level = level;
 		this.experience = experience;
-		this.accountID = accountID;
+		this.accountUsername = accountID;
 	}
 	
 	/**
@@ -258,14 +258,8 @@ public class Character {
 		return this.experience;
 	}
 	
-	public Account getAccount(){
-		Account parentAccount = null;
-		parentAccount = Account.findAccount(this.accountID);
-		return parentAccount;
-	}
-	
-	public int getAccountID(){
-		return this.accountID;
+	public String getAccountUsername(){
+		return this.accountUsername;
 	}
 
 	public ObjectType getType() {

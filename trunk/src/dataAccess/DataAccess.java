@@ -197,10 +197,10 @@ public class DataAccess {
 			}
 			if(!username.isEmpty()){
 				if(!first) query += " AND ";
-				query += "`account_account_ID`=(SELECT `account_ID` FROM `Account` WHERE `account_name`='"+name+"')";
+				query += "`account_account_ID`=(SELECT `account_ID` FROM `Account` WHERE `account_name`='"+username+"')";
 			}
 		}
-		
+		//TODO FIX THE ACCOUNT ID RETURN
 		List<Character> characters = null;
 		try {
 			ResultSet result = query(query);
@@ -217,7 +217,7 @@ public class DataAccess {
 						Integer.parseInt(result.getString(10)),
 						Integer.parseInt(result.getString(11)),
 						Integer.parseInt(result.getString(12)),
-						Integer.parseInt(result.getString(13))));
+						result.getString(13)));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -234,8 +234,45 @@ public class DataAccess {
 	 * @return
 	 */
 	public List<Item> searchItem(String name, Item.Rarity rarity, String ability){
-		//TODO
-		return null;
+		String query = "SELECT `name`,`damage`,`armor`,`level`,`rarity`,`value`,`model`,`refinement`,`abilityID` FROM `Item`";
+		if(!name.isEmpty() && rarity!=null && !ability.isEmpty()){
+			boolean first = true;
+			query += " WHERE ";
+			if(!name.isEmpty()){
+				query += "`name`='"+name+"'";
+				if(first) first = false;
+			}
+			if(rarity!=null){
+				if(first) first = false;
+				else query += " AND ";
+				query += "`rarity`='"+name+"'";
+			}
+			if(!username.isEmpty()){
+				if(!first) query += " AND ";
+				query += "`ability_ID`=(SELECT `ability_ID` FROM `Ability` WHERE `name`='"+ability+"')";
+			}
+		}
+		//TODO FIX THE ABILITY ID RETURN
+		List<Item> items = null;
+		try {
+			ResultSet result = query(query);
+			items = new ArrayList<Item>();
+			while(result.next()){
+				items.add(new Item(
+						result.getString(1), 
+						Integer.parseInt(result.getString(2)), 
+						Integer.parseInt(result.getString(3)),
+						Integer.parseInt(result.getString(4)),
+						Rarity.valueOf(result.getString(5)), 
+						Integer.parseInt(result.getString(6)), 
+						result.getString(7), 
+						result.getString(9)));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return items;
 	}
 
 	/**
@@ -269,7 +306,7 @@ public class DataAccess {
 	 * @param user
 	 * @return
 	 */
-	public boolean addUser(String username, Account user){
+	public boolean addUser(Account user){
 		//TODO
 		return false;
 	}
@@ -277,25 +314,61 @@ public class DataAccess {
 
 	/**
 	 * Karl
-	 * @param name
 	 * @param Character
 	 * @return
 	 */
-	public boolean addCharacter(String name, Character Character){
-		//TODO
-		return false;
+	public boolean addCharacter(Character character){
+		String query = "INSERT INTO `mydb`.`character` " +
+		"(`name`, `race`, `model`, `strength`, " +
+		"`constitution`, `intelligence`, `wisdom`, `agility`, " +
+		"`dexterity`, `level`, `experience`, `account_account_ID`) VALUES (" +
+		"'"+character.getName()+"', " +
+		"'"+character.getRace()+"', " +
+		"'"+character.getModel()+"', " +
+		"'"+character.getStrength()+"', " +
+		"'"+character.getConstitution()+"', " +
+		"'"+character.getIntelligence()+"', " +
+		"'"+character.getWisdom()+"', " +
+		"'"+character.getAgility()+"', " +
+		"'"+character.getDexterity()+"', " +
+		"'"+character.getLevel()+"', " +
+		"'"+character.getExperience()+"', " +
+		"(SELECT `account_ID` FROM `Account` WHERE `account_name`='"+character.getAccountUsername()+"'))";
+		
+		try {
+			return execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 
 	/**
 	 * Karl
-	 * @param name
 	 * @param item
 	 * @return
 	 */
-	public boolean addItem(String name, Item item){
-		//TODO
-		return false;
+	public boolean addItem(Item item){
+		String query = "INSERT INTO `items` " +
+			"(`name`, `damage`, `armor`, " +
+			"`level_requirement`, `rarity`, `value`, `model`, " +
+			"`abilitiy_ability_ID`) VALUES (" +
+		"'"+item.getName()+"', " +
+		"'"+item.getDamage()+"', " +
+		"'"+item.getArmor()+"', " +
+		"'"+item.getLevel()+"', " +
+		"'"+item.getRarity()+"', " +
+		"'"+item.getValue()+"', " +
+		"'"+item.getModel()+"', " +
+		"(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbilityName()+"'))";
+		
+		try {
+			return execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	/**
@@ -304,7 +377,7 @@ public class DataAccess {
 	 * @param skill
 	 * @return
 	 */
-	public boolean addSkill(String name, Skill skill){
+	public boolean addSkill(Skill skill){
 		//TODO
 		return false;
 	}
@@ -315,7 +388,7 @@ public class DataAccess {
 	 * @param ability
 	 * @return
 	 */
-	public boolean addAbility(String name, Ability ability){
+	public boolean addAbility(Ability ability){
 		//TODO
 		return false;
 	}
@@ -328,7 +401,7 @@ public class DataAccess {
 	 * @param user
 	 * @return
 	 */
-	public boolean editUser(String username, Account user){
+	public boolean editUser(Account user){
 		//TODO
 		return false;
 	}
@@ -340,9 +413,27 @@ public class DataAccess {
 	 * @param Character
 	 * @return
 	 */
-	public boolean editCharacter(String name, Character Character){
-		//TODO
-		return false;
+	public boolean editCharacter(String name, Character character){
+		String query = "UPDATE `character` SET " +
+		"`name`='"+character.getName()+
+		"', `race`='"+character.getRace()+
+		"', `model`='" +character.getModel()+
+		"', `strength`='" +character.getStrength()+
+		"', `constitution`='" +character.getConstitution()+
+		"', `intelligence`='" +character.getIntelligence()+
+		"', `wisdom`='" +character.getWisdom()+
+		"', `agility`='" +character.getAgility()+
+		"', `dexterity`='" +character.getDexterity()+
+		"', `level`='" +character.getLevel()+
+		"', `experience`='" +character.getExperience()+
+		"', `account_account_ID`=(SELECT `account_ID` FROM `Account` WHERE `account_name`='"+character.getAccountUsername()+"'))"+
+		"' WHERE `name`='"+name+"'";
+		try {
+			return execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 
@@ -353,8 +444,22 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean editItem(String name, Item item){
-		//TODO
-		return false;
+		String query = "UPDATE `items` SET " +
+			"`name`='" +item.getName()+
+			"', `damage`='" +item.getDamage()+
+			"', `armor`='" +item.getArmor()+
+			"', `level_requirement`='" +item.getLevel()+
+			"', `rarity`='" +item.getRarity()+
+			"', `value`='" +item.getValue()+
+			"', `model`='" +item.getModel()+
+			"', `abilitiy_ability_ID`='(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbilityName()+"')"+
+			"' WHERE `name`='" +name+"'";
+		try {
+			return execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	/**
@@ -401,8 +506,12 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean deleteCharacter(String name){
-		//TODO
-		return false;
+		try {
+			return execute("DELETE FROM `character` WHERE `name`='"+name+"'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 
@@ -413,8 +522,12 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean deleteItem(String name){
-		//TODO
-		return false;
+		try {
+			return execute("DELETE FROM `items` WHERE `name`='"+name+"'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	/**

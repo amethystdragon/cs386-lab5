@@ -36,10 +36,9 @@ public class ResultsPanel {
 		
 		JButton displayButton = new JButton("Display Account");
 		
-		panel.add(displayButton, BorderLayout.SOUTH);
+		resultsPanel.add(displayButton, BorderLayout.SOUTH);
 		
 		JScrollBar resultsBar = new JScrollBar();
-		panel.add(resultsBar, BorderLayout.CENTER);
-		
+		resultsPanel.add(resultsBar, BorderLayout.CENTER);
 	}
 }

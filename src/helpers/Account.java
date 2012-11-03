@@ -1,5 +1,6 @@
 package helpers;
 
+import dataAccess.DataAccess;
 import gui.GUI;
 import gui.GUI.ObjectType;
 
@@ -28,9 +29,8 @@ public class Account {
 	/**
 	 * private Constructor
 	 */
-	private Account(int ID, String accountName, String password, String email,
+	public Account(String accountName, String password, String email,
 			String fName, String lName, int currency){
-		this.ID = ID;
 		this.account_name = accountName;
 		this.password = password;
 		this.email = email;
@@ -52,9 +52,14 @@ public class Account {
 	public static boolean addAccount(String accountName, String password, String email,
 			String fName, String lName, int currency){
 		boolean added = false;
-		int id = getNewID();
-		//TODO sql command to add account to db
-		//if added set added = true
+		if(Account.findAccount(accountName) == null){
+			Account newAccount = new Account(accountName, password, email, fName, lName, currency);
+			try{
+				added = DataAccess.getInstance().addUser(newAccount);
+			}catch(Exception e){
+				//TODO exception handling?
+			}
+		}
 		return added;
 	}
 	
@@ -100,18 +105,6 @@ public class Account {
 		boolean changed = false;
 		//TODO sql command to change contact info
 		return changed;
-	}
-	
-	/**
-	 * returns account with account_name and pass or null if not in db
-	 * @param accountName
-	 * @param password
-	 * @return - account associated with name and pass or null if not in db
-	 */
-	public static Account login(String accountName, String password){
-		Account login = null;
-		//TODO sql command to find account with name and pass
-		return login;
 	}
 	
 	/**

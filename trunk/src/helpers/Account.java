@@ -91,7 +91,7 @@ public class Account {
 	 * @return true if deleted else false
 	 */
 	public static boolean deleteAccount(Account account){
-		return deleteAccount(account.getID());
+		return false;
 	}
 	
 	/**
@@ -152,9 +152,6 @@ public class Account {
 	}
 	
 	//***Public Accessors***//
-	public int getID(){
-		return this.ID;
-	}
 	
 	public String getPassword(){
 		return this.password;

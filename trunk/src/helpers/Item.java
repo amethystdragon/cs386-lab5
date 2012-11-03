@@ -33,12 +33,12 @@ public class Item {
 	
 	
 	//id of associated ability
-	private String abilityName;
+	private Ability ability;
 	
 	/**
 	 * private constructor
 	 */
-	public Item(String name, int damage, int armor, int level, Rarity rarity, int value, String model, String abilityID){
+	public Item(String name, int damage, int armor, int level, Rarity rarity, int value, String model, Ability ability){
 		this.name = name;
 		this.damage = damage;
 		this.armor = armor;
@@ -46,7 +46,7 @@ public class Item {
 		this.rarity = rarity;
 		this.value = value;
 		this.model = model;
-		this.abilityName = abilityID;
+		this.ability = ability;
 	}
 	
 	public static boolean addItem(String name, int damage, int armor, int level, Rarity rarity, int value, String model, int weight, int refinement, int abilityID){
@@ -162,8 +162,8 @@ public class Item {
 	}
 	
 	
-	public String getAbilityName(){
-		return this.abilityName;
+	public Ability getAbility(){
+		return this.ability;
 	}
 
 	public ObjectType getType() {

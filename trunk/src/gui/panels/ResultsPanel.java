@@ -17,7 +17,6 @@ import javax.swing.ListSelectionModel;
 
 public class ResultsPanel {
 	private static JPanel resultsPanel;
-	private List<Object> objects;
 	
 	public static JPanel getResultsPanel(){
 		if(resultsPanel == null){

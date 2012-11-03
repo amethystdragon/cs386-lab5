@@ -22,9 +22,8 @@ public class Ability {
 	 * @param description
 	 * @param level
 	 */
-	private Ability(int ID, String name, String description, int level)
+	public Ability(String name, String description, int level)
 	{
-		this.ID = ID;
 		this.name = name;
 		this.description = description;
 		this.level = level;

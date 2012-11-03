@@ -9,9 +9,6 @@ public class Item {
 		Common, Uncommon, Rare, Mythic, Legendary, Unique
 	}
 	
-	//id of item - primary key - unique
-	private int ID;
-	
 	//name of item - unique
 	private String name;
 	
@@ -33,19 +30,14 @@ public class Item {
 	//model used to display item
 	private String model;
 	
-	//value from 0-100 of "wear" on item, items decriment refinement occasionally when used
-	//and cannot be used while refinement = 0, "repairing" items is a game mechanic which restores
-	//this value to 100
-	private int refinement;
 	
 	//id of associated ability
-	private int ability_ID;
+	private Ability ability;
 	
 	/**
 	 * private constructor
 	 */
-	private Item(int ID, String name, int damage, int armor, int level, Rarity rarity, int value, String model, int refinement, int abilityID){
-		this.ID = ID;
+	public Item(String name, int damage, int armor, int level, Rarity rarity, int value, String model, Ability ability){
 		this.name = name;
 		this.damage = damage;
 		this.armor = armor;
@@ -53,13 +45,11 @@ public class Item {
 		this.rarity = rarity;
 		this.value = value;
 		this.model = model;
-		this.refinement = refinement;
-		this.ability_ID = abilityID;
+		this.ability = ability;
 	}
 	
 	public static boolean addItem(String name, int damage, int armor, int level, Rarity rarity, int value, String model, int weight, int refinement, int abilityID){
 		boolean added = false;
-		int ID = getNewID();
 		//TODO sql command to add new item to db
 		//if added set added = true
 		return added;
@@ -93,7 +83,8 @@ public class Item {
 	 * @return - true if deleted else false
 	 */
 	public static boolean deleteItem(Item item){
-		return deleteItem(item.getID());
+		//TODO
+		return false;
 	}
 	
 	/**
@@ -142,10 +133,6 @@ public class Item {
 	}
 	
 	///***Public Accessors***///
-	public int getID(){
-		return this.ID;
-	}
-	
 	public String getName(){
 		return this.name;
 	}
@@ -174,13 +161,10 @@ public class Item {
 		return this.model;
 	}
 	
-	public int getRefinement(){
-		return this.refinement;
-	}
 	
 	public Ability getAbility(){
 		Ability ability = null;
-		Ability.findAbility(this.ability_ID);
+		Ability.findAbility(this.ability.getName());
 		return ability;
 	}
 

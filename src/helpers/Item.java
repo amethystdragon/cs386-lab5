@@ -2,7 +2,6 @@ package helpers;
 
 import gui.GUI;
 import gui.GUI.ObjectType;
-import helpers.Item.Rarity;
 
 public class Item {
 	
@@ -119,17 +118,6 @@ public class Item {
 		//TODO sql command to set refinement of this item in db
 		//if success set this.refinement = refinement set = true
 		return set;
-	}
-	
-	/**
-	 * finds next unused ID for primary key
-	 * @return - next valid new id key
-	 */
-	private static int getNewID(){
-		int id = 1;
-		//TODO sql command to get collection of all used IDs
-		//while collection contains(id){ id++}
-		return id;
 	}
 	
 	///***Public Accessors***///

@@ -170,12 +170,12 @@ public class DataAccess {
 	 */
 	public List<Account> searchUser(String username, String fname, String lname, String email){
 		List<Account> accounts = new LinkedList<Account>();
-		String query = new String("SELECT * FROM account");
+		String query = new String("SELECT * FROM `account`");
 		if(!username.isEmpty() || !fname.isEmpty() || !lname.isEmpty() || !email.isEmpty()){
 			boolean first = false;
 			query += " WHERE";
 			if(!username.isEmpty()){
-				query += " account_name = \'" + username + "\'";
+				query += " `account_name`='" + username + "'";
 				first = true;
 			}
 			if(!fname.isEmpty()){
@@ -183,31 +183,37 @@ public class DataAccess {
 					query += " AND";
 					first = true;
 				}	
-				query += " first_name = \'" + fname + "\'";
+				query += " `first_name`='" + fname + "'";
 			}
 			if(!lname.isEmpty()){
 				if(first){
 					query += " AND";
 					first = true;
 				}
-				query += " last_name = \'" + lname + "\'";
+				query += " `last_name`='" + lname + "'";
 			}
 			if(!email.isEmpty()){
 				if(first){
 					query += " AND";
 					first = true;
 				}
-				query += " email = \'" + email + "\'";
+				query += " `email`='" + email + "'";
 			}
 		}
 		query += ";";
 		try{
 			ResultSet result = query(query);
 			while(result.next()){
-				//accounts.add(arg0);
+				accounts.add(new Account(
+					result.getString(2), 
+					result.getString(3), 
+					result.getString(4), 
+					result.getString(5), 
+					result.getString(6), 
+					Integer.parseInt(result.getString(7))));
 			}
 		}catch(Exception e){
-			//TODO
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -323,19 +329,57 @@ public class DataAccess {
 	}
 
 	/**
-	 - Malcolm
+	 * @author Joe
+	 * Search for a skill which matches the given criteria
+	 * Query is built depending on the non-empty paramerters 
+	 * @param ID
 	 * @param name
 	 * @param level
-	 * @return
+	 * @return the list of matching skills
 	 */
-	public List<Skill> searchSkill(String name, String level){
-		//TODO
-		return null;
+	public List<Skill> searchSkill(String name, int level){
+		List<Skill> skillList = null;
+		ResultSet result = null;
+		String query = "SELECT * FROM `skill`";
+		// Add to the query string based on what information is available
+		if(name.isEmpty() && level<0) {
+			query += ";";
+		} else {
+			query += " WHERE ";
+		}
+		if(!name.isEmpty()) {
+			query += "`name`='" + name + "'";
+		}
+		if(!name.isEmpty() && !(level<0)) {
+			query += " AND ";
+		}
+		if(!name.isEmpty()) {
+			query += "`level_requirement`='" + level + "'";
+		}
+		// End of query construction
+		query += ";";
+
+		// Create a list of the returned skills from the query
+		try {
+			result = query(query);
+			skillList = new ArrayList<Skill>();
+			// While there is a next entry, create the skills and add skills to the list
+			while(result.next()) {
+				skillList.add(new Skill(result.getString(2),
+						result.getString(3),
+						result.getInt(4)));
+			}
+		} catch (SQLException e) {
+			System.err.println("Error in Skill Search: " + e.getMessage());
+			e.printStackTrace();
+		}
+		// Return the list of found skills
+		return skillList;
 	}
 
 
 	/**
-	 * Joe
+	 * @author Malcolm
 	 * @param name
 	 * @param level
 	 * @return
@@ -348,7 +392,7 @@ public class DataAccess {
 	//ADD
 
 	/**
-	 * Will
+	 * @author Will
 	 * @param username
 	 * @param user
 	 * @return
@@ -356,8 +400,8 @@ public class DataAccess {
 	public boolean addUser(Account user){
 		boolean added = false;
 		try{
-			added = this.execute("INSERT INTO \'account\' (\'account_name\', \'password\', \'email\', \'first_name\', \'last_name\', " +
-					"\'ingame_currency\') VALUES (\'" + user.getAccountName() + "\', \'" + user.getPassword() + "\', \'" +
+			added = this.execute("INSERT INTO `account` (`account_name, `password`, `email`, `first_name`, `last_name`, " +
+					"`ingame_currency`) VALUES ('" + user.getAccountName() + "\', \'" + user.getPassword() + "\', \'" +
 					user.getEmail() + "\', \'" + user.getFirstName() + "\', \'" + user.getLastName() + "\', \'" + user.getCurrency() + "\');");
 		}catch(Exception e){
 		}
@@ -366,7 +410,7 @@ public class DataAccess {
 
 
 	/**
-	 * Karl
+	 * @author Karl
 	 * @param Character
 	 * @return
 	 */
@@ -398,7 +442,7 @@ public class DataAccess {
 
 
 	/**
-	 * Karl
+	 * @author Karl
 	 * @param item
 	 * @return
 	 */
@@ -425,18 +469,28 @@ public class DataAccess {
 	}
 
 	/**
-	 * Malcolm
+	 * @author Joe
+	 * Adds the skill into the database using the insert command
+	 * Unique IDs auto-increment
 	 * @param name
-	 * @param skill
-	 * @return
+	 * @param description
+	 * @param level
+	 * @return true if successful
 	 */
-	public boolean addSkill(Skill skill){
-		//TODO
-		return false;
+	public boolean addSkill(Skill skill) {
+		boolean execute = false;
+		try{
+			execute = execute("INSERT INTO SKILL(name, description, level_requirement) " +
+					"VALUES('" + skill.getName() + "', '" + skill.getDescription() + "', " + skill.getLevelRequirement()+ ");");
+		} catch (SQLException e) {
+			System.err.println("Error in Skill Add: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return execute;
 	}
 
 	/**
-	 * Joe
+	 * @author Malcolm
 	 * @param name
 	 * @param ability
 	 * @return
@@ -449,7 +503,7 @@ public class DataAccess {
 
 	//EDIT
 	/**
-	 * Will
+	 * @author Will
 	 * @param username
 	 * @param user
 	 * @return
@@ -461,7 +515,7 @@ public class DataAccess {
 
 
 	/**
-	 * Karl
+	 * @author Karl
 	 * @param name
 	 * @param Character
 	 * @return
@@ -491,7 +545,7 @@ public class DataAccess {
 
 
 	/**
-	 * Karl
+	 * @author Karl
 	 * @param name
 	 * @param item
 	 * @return
@@ -516,18 +570,30 @@ public class DataAccess {
 	}
 
 	/**
-	 * Malcolm
+	 * @author Joe
+	 * Updates the skill using the ID as the identifier
+	 * @param skill_ID
 	 * @param name
-	 * @param skill
-	 * @return
+	 * @param description
+	 * @param level
+	 * @return true if successful
 	 */
 	public boolean editSkill(String name, Skill skill){
-		//TODO
-		return false;
+		boolean execute = false;
+		try{
+			execute = execute("UPDATE SKILL SET `name`='" + skill.getName()+
+					"', `description`='" + skill.getDescription() +
+					"', `level_requirement`='" + skill.getLevelRequirement() +
+					"' WHERE `name`='" + name + "';");
+		} catch (SQLException e) {
+			System.err.println("Error in Skill Update: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return execute;
 	}
 
 	/**
-	 * Joe
+	 * @author Malcolm
 	 * @param name
 	 * @param ability
 	 * @return
@@ -541,7 +607,7 @@ public class DataAccess {
 
 	//DELETE
 	/**
-	 * Will
+	 * @author Will
 	 * @param username
 	 * @param user
 	 * @return
@@ -553,7 +619,7 @@ public class DataAccess {
 
 
 	/**
-	 * Karl
+	 * @author Karl
 	 * @param name
 	 * @param Character
 	 * @return
@@ -569,7 +635,7 @@ public class DataAccess {
 
 
 	/**
-	 * Karl
+	 * @author Karl
 	 * @param name
 	 * @param item
 	 * @return
@@ -584,18 +650,24 @@ public class DataAccess {
 	}
 
 	/**
-	 * Malcolm
+	 * @author Joe
+	 * Deletes a skill using a string name
 	 * @param name
-	 * @param skill
-	 * @return
+	 * @return true if successful
 	 */
-	public boolean deleteSkill(String name){
-		//TODO
-		return false;
+	public boolean deleteSkill(String name) {
+		boolean execute = false;
+		try{
+			execute = execute("DELETE FROM `skills` WHERE `name`='" + name + "';");
+		} catch (SQLException e) {
+			System.err.println("Error in Skill Delete By Name: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return execute;
 	}
 
 	/**
-	 * Joe
+	 * @author Malcolm
 	 * @param name
 	 * @param ability
 	 * @return

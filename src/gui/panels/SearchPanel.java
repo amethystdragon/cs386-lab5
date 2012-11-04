@@ -101,7 +101,7 @@ public class SearchPanel {
 					GUI.getGUI().updateMainPanel();
 					break;
 				case "Skill":
-					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchSkill("", ""));
+					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchSkill("", -1));
 					GUI.getGUI().updateMainPanel();
 					break;
 				case "Ability":

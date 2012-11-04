@@ -30,7 +30,6 @@ public class Skill {
 	
 	public static boolean addSkill(String name, String description, int level){
 		boolean added = false;
-		int ID = getNewID();
 		if(findSkill(name) == null){
 			//TODO sql command to add skill to database
 			//set result = true if added
@@ -95,15 +94,7 @@ public class Skill {
 		return result;
 	}
 	
-	private static int getNewID(){
-		int id = 1;
-		//TODO sql command to get collection of all used IDs
-		//while collection contains(id){ id++}
-		return id;
-	}
-	
 	//***Public Accessors***//
-	
 	public String getName(){
 		return this.name;
 	}

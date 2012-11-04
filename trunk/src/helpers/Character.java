@@ -87,7 +87,6 @@ public class Character {
 	public static boolean addCharacter(int accountID, String name, Race race, int age, String model, int strength,
 			int constitution, int intelligence, int wisdom, int agility, int dexterity, int level, int experience){
 		boolean added = false;
-		int id = getNewID();
 		//TODO sql command to add char to db set added = true if added
 		//no duplicate character names on same account, enforced in code here
 		return added;
@@ -196,17 +195,6 @@ public class Character {
 		List<Skill> skills = new LinkedList<Skill>();
 		//TODO get skills sql commands
 		return skills;
-	}
-	
-	/**
-	 * finds next unused ID for primary key
-	 * @return - next valid new id key
-	 */
-	private static int getNewID(){
-		int id = 1;
-		//TODO sql command to get collection of all used IDs
-		//while collection contains(id){ id++}
-		return id;
 	}
 	
 	//***Public Accessors***//

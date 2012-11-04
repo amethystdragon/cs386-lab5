@@ -38,7 +38,6 @@ public class Ability {
 	 */
 	public static boolean addAbility(String name, String description, int level){
 		boolean added = false;
-		int ID = getNewID();
 		if(findAbility(name) == null){
 			//TODO sql command to add ability to database
 			//set result = true if added
@@ -104,13 +103,6 @@ public class Ability {
 		//TODO sql command to find ability with given ID
 		//result = result of sql query
 		return result;
-	}
-	
-	private static int getNewID(){
-		int id = 1;
-		//TODO sql command to get collection of all used IDs
-		//while collection contains(id){ id++}
-		return id;
 	}
 	
 	//***Public Accessors***//

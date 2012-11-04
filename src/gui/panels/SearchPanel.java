@@ -49,7 +49,7 @@ public class SearchPanel {
 				@Override
 				public void actionPerformed(ActionEvent ae) {
 					try{
-						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
+						ResultsPanel.setResultsPanelAcc(DataAccess.getInstance().searchUser("", "", "", ""));
 						GUI.getGUI().updateMainPanel();
 					}catch(Exception e){}
 				}
@@ -68,6 +68,15 @@ public class SearchPanel {
 			label = new JLabel("Search All");
 			panel.add(label);
 			button = new JButton("Search All"); //TODO
+			button.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ae) {
+					try{
+						ResultsPanel.setResultsPanelChar(DataAccess.getInstance().searchCharacter("", null, ""));
+						GUI.getGUI().updateMainPanel();
+					}catch(Exception e){}
+				}
+			});
 			panel.add(button);
 			
 			searchPanel.add(panel);
@@ -82,6 +91,15 @@ public class SearchPanel {
 			label = new JLabel("Search All");
 			panel.add(label);
 			button = new JButton("Search All"); //TODO
+			button.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ae) {
+					try{
+						ResultsPanel.setResultsPanelItem(DataAccess.getInstance().searchItem("", null, ""));
+						GUI.getGUI().updateMainPanel();
+					}catch(Exception e){}
+				}
+			});
 			panel.add(button);
 			
 			searchPanel.add(panel);
@@ -96,6 +114,15 @@ public class SearchPanel {
 			label = new JLabel("Search All");
 			panel.add(label);
 			button = new JButton("Search All"); //TODO
+			button.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ae) {
+					try{
+						ResultsPanel.setResultsPanelSkill(DataAccess.getInstance().searchSkill("", ""));
+						GUI.getGUI().updateMainPanel();
+					}catch(Exception e){}
+				}
+			});
 			panel.add(button);
 			
 			searchPanel.add(panel);
@@ -110,6 +137,15 @@ public class SearchPanel {
 			label = new JLabel("Search All");
 			panel.add(label);
 			button = new JButton("Search All"); //TODO
+			button.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ae) {
+					try{
+						ResultsPanel.setResultsPanelAbility(DataAccess.getInstance().searchAbility("", ""));
+						GUI.getGUI().updateMainPanel();
+					}catch(Exception e){}
+				}
+			});
 			panel.add(button);
 			
 			searchPanel.add(panel);

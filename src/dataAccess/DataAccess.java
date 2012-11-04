@@ -13,10 +13,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DataAccess implements DataAccessInterface {
+public class DataAccess {
 	/**
 	 * Stores the connection to the MySQL server
 	 */
@@ -28,15 +29,15 @@ public class DataAccess implements DataAccessInterface {
 	/**
 	 * Stores the database name to connect to.
 	 */
-	private String mydatabase = "Timeshares";
+	private String mydatabase = "mydb";
 	/**
 	 * Stores the password to connect to the database with
 	 */
-	private String password = "R78933jGtCKAWczM";
+	private String password = "password";
 	/**
 	 * Stores the server name
 	 */
-	private String serverName = "localhost";
+	private String serverName = "155.92.107.132";
 	/**
 	 * Stores and executes MySQL statements
 	 */
@@ -48,7 +49,7 @@ public class DataAccess implements DataAccessInterface {
 	/**
 	 * Stores the username to connect to the database with
 	 */
-	private String username = "TimeshareUser";
+	private String username = "root";
 
 	private static DataAccess instance;
 
@@ -156,9 +157,18 @@ public class DataAccess implements DataAccessInterface {
 		return instance;
 	}
 
-	@Override
-	public List<Account> searchUser(String username, String fname,
-			String lname, String email) {
+	//SEARCH 
+	/**
+	 * 
+	 * @author Will
+	 * 
+	 * @param username
+	 * @param fname
+	 * @param lname
+	 * @param email
+	 * @return
+	 */
+	public List<Account> searchUser(String username, String fname, String lname, String email){
 		List<Account> accounts = new LinkedList<Account>();
 		String query = new String("SELECT * FROM account");
 		if(!username.isEmpty() || !fname.isEmpty() || !lname.isEmpty() || !email.isEmpty()){
@@ -194,7 +204,7 @@ public class DataAccess implements DataAccessInterface {
 		try{
 			ResultSet result = query(query);
 			while(result.next()){
-				accounts.add(arg0);
+				//accounts.add(arg0);
 			}
 		}catch(Exception e){
 			//TODO
@@ -202,33 +212,148 @@ public class DataAccess implements DataAccessInterface {
 		return null;
 	}
 
-	@Override
-	public List<Character> searchCharacter(String name, Race race,
-			String username) {
-		// TODO Auto-generated method stub
+	/**
+	 * 
+	 * @author Karl
+	 * 
+	 * @param name
+	 * @param race
+	 * @param username
+	 * @return
+	 */
+	public List<Character> searchCharacter(String name, Character.Race race, String username){
+		String query = "SELECT `name`,`race`,`model`,`strength`,`constitution`,`intelligence`,`wisdom`,`agility`,`dexterity`,`level`,`experience`,`account_ID` FROM `character`";
+		if(!name.isEmpty() && race!=null && !username.isEmpty()){
+			boolean first = true;
+			query += " WHERE ";
+			if(!name.isEmpty()){
+				query += "`name`='"+name+"'";
+				if(first) first = false;
+			}
+			if(race!=null){
+				if(first) first = false;
+				else query += " AND ";
+				query += "`race`='"+name+"'";
+			}
+			if(!username.isEmpty()){
+				if(!first) query += " AND ";
+				query += "`account_account_ID`=(SELECT `account_ID` FROM `Account` WHERE `account_name`='"+username+"')";
+			}
+		}
+		//TODO FIX THE ACCOUNT ID RETURN
+		List<Character> characters = null;
+		try {
+			System.out.println(1);
+			ResultSet result = query(query);
+			System.out.println(2);
+			characters = new ArrayList<Character>();
+			while(result.next()){
+				System.out.println(3);
+				Character newChar = new Character(result.getString(1), 
+						Race.getRace(result.getString(2)), 
+						result.getString(3), 
+						Integer.parseInt(result.getString(4)), 
+						Integer.parseInt(result.getString(5)),
+						Integer.parseInt(result.getString(6)),
+						Integer.parseInt(result.getString(7)),
+						Integer.parseInt(result.getString(8)),
+						Integer.parseInt(result.getString(9)),
+						Integer.parseInt(result.getString(10)),
+						Integer.parseInt(result.getString(11)),
+						result.getString(12));
+				System.out.println(4);
+				characters.add(newChar);
+				System.out.println(newChar);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		System.out.println(characters.size());
+		return characters;
+	}
+
+	/**
+	 * 
+	 * @author Karl
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public List<Item> searchItem(String name, Item.Rarity rarity, String ability){
+		String query = "SELECT `name`,`damage`,`armor`,`level`,`rarity`,`value`,`model`,`refinement`,`abilityID` FROM `Item`";
+		if(!name.isEmpty() && rarity!=null && !ability.isEmpty()){
+			boolean first = true;
+			query += " WHERE ";
+			if(!name.isEmpty()){
+				query += "`name`='"+name+"'";
+				if(first) first = false;
+			}
+			if(rarity!=null){
+				if(first) first = false;
+				else query += " AND ";
+				query += "`rarity`='"+name+"'";
+			}
+			if(!username.isEmpty()){
+				if(!first) query += " AND ";
+				query += "`ability_ID`=(SELECT `ability_ID` FROM `Ability` WHERE `name`='"+ability+"')";
+			}
+		}
+		//TODO FIX THE ABILITY ID RETURN
+		List<Item> items = null;
+		try {
+			ResultSet result = query(query);
+			items = new ArrayList<Item>();
+			while(result.next()){
+				items.add(new Item(
+						result.getString(1), 
+						Integer.parseInt(result.getString(2)), 
+						Integer.parseInt(result.getString(3)),
+						Integer.parseInt(result.getString(4)),
+						Rarity.valueOf(result.getString(5)), 
+						Integer.parseInt(result.getString(6)), 
+						result.getString(7), 
+						null));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return items;
+	}
+
+	/**
+	 - Malcolm
+	 * @param name
+	 * @param level
+	 * @return
+	 */
+	public List<Skill> searchSkill(String name, String level){
+		//TODO
 		return null;
 	}
 
-	@Override
-	public List<Item> searchItem(String name, Rarity rarity, String ability) {
-		// TODO Auto-generated method stub
+
+	/**
+	 * Joe
+	 * @param name
+	 * @param level
+	 * @return
+	 */
+	public List<Ability> searchAbility(String name, int level){
+		//TODO
 		return null;
 	}
 
-	@Override
-	public List<Skill> searchSkill(String name, String level) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	//ADD
 
-	@Override
-	public List<Ability> searchAbility(String name, int level) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean addUser(Account user) {
+	/**
+	 * Will
+	 * @param username
+	 * @param user
+	 * @return
+	 */
+	public boolean addUser(Account user){
 		boolean added = false;
 		try{
 			added = this.execute("INSERT INTO \'account\' (\'account_name\', \'password\', \'email\', \'first_name\', \'last_name\', " +
@@ -239,87 +364,244 @@ public class DataAccess implements DataAccessInterface {
 		return added;
 	}
 
-	@Override
-	public boolean addCharacter(String name, Character Character) {
-		// TODO Auto-generated method stub
+
+	/**
+	 * Karl
+	 * @param Character
+	 * @return
+	 */
+	public boolean addCharacter(Character character){
+		String query = "INSERT INTO `mydb`.`character` " +
+		"(`name`, `race`, `model`, `strength`, " +
+		"`constitution`, `intelligence`, `wisdom`, `agility`, " +
+		"`dexterity`, `level`, `experience`, `account_account_ID`) VALUES (" +
+		"'"+character.getName()+"', " +
+		"'"+character.getRace()+"', " +
+		"'"+character.getModel()+"', " +
+		"'"+character.getStrength()+"', " +
+		"'"+character.getConstitution()+"', " +
+		"'"+character.getIntelligence()+"', " +
+		"'"+character.getWisdom()+"', " +
+		"'"+character.getAgility()+"', " +
+		"'"+character.getDexterity()+"', " +
+		"'"+character.getLevel()+"', " +
+		"'"+character.getExperience()+"', " +
+		"(SELECT `account_ID` FROM `Account` WHERE `account_name`='"+character.getAccountUsername()+"'))";
+		
+		try {
+			return execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	/**
+	 * Karl
+	 * @param item
+	 * @return
+	 */
+	public boolean addItem(Item item){
+		String query = "INSERT INTO `items` " +
+			"(`name`, `damage`, `armor`, " +
+			"`level_requirement`, `rarity`, `value`, `model`, " +
+			"`abilitiy_ability_ID`) VALUES (" +
+		"'"+item.getName()+"', " +
+		"'"+item.getDamage()+"', " +
+		"'"+item.getArmor()+"', " +
+		"'"+item.getLevel()+"', " +
+		"'"+item.getRarity()+"', " +
+		"'"+item.getValue()+"', " +
+		"'"+item.getModel()+"', " +
+		"(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbility().getName()+"'))";
+		
+		try {
+			return execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Malcolm
+	 * @param name
+	 * @param skill
+	 * @return
+	 */
+	public boolean addSkill(Skill skill){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean addItem(String name, Item item) {
-		// TODO Auto-generated method stub
+	/**
+	 * Joe
+	 * @param name
+	 * @param ability
+	 * @return
+	 */
+	public boolean addAbility(Ability ability){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean addSkill(String name, Skill skill) {
-		// TODO Auto-generated method stub
+
+	//EDIT
+	/**
+	 * Will
+	 * @param username
+	 * @param user
+	 * @return
+	 */
+	public boolean editUser(Account user){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean addAbility(String name, Ability ability) {
-		// TODO Auto-generated method stub
+
+	/**
+	 * Karl
+	 * @param name
+	 * @param Character
+	 * @return
+	 */
+	public boolean editCharacter(String name, Character character){
+		String query = "UPDATE `character` SET " +
+		"`name`='"+character.getName()+
+		"', `race`='"+character.getRace()+
+		"', `model`='" +character.getModel()+
+		"', `strength`='" +character.getStrength()+
+		"', `constitution`='" +character.getConstitution()+
+		"', `intelligence`='" +character.getIntelligence()+
+		"', `wisdom`='" +character.getWisdom()+
+		"', `agility`='" +character.getAgility()+
+		"', `dexterity`='" +character.getDexterity()+
+		"', `level`='" +character.getLevel()+
+		"', `experience`='" +character.getExperience()+
+		"', `account_account_ID`=(SELECT `account_ID` FROM `Account` WHERE `account_name`='"+character.getAccountUsername()+"'))"+
+		"' WHERE `name`='"+name+"'";
+		try {
+			return execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	/**
+	 * Karl
+	 * @param name
+	 * @param item
+	 * @return
+	 */
+	public boolean editItem(String name, Item item){
+		String query = "UPDATE `items` SET " +
+			"`name`='" +item.getName()+
+			"', `damage`='" +item.getDamage()+
+			"', `armor`='" +item.getArmor()+
+			"', `level_requirement`='" +item.getLevel()+
+			"', `rarity`='" +item.getRarity()+
+			"', `value`='" +item.getValue()+
+			"', `model`='" +item.getModel()+
+			"', `abilitiy_ability_ID`='(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbility().getName()+"')"+
+			"' WHERE `name`='" +name+"'";
+		try {
+			return execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Malcolm
+	 * @param name
+	 * @param skill
+	 * @return
+	 */
+	public boolean editSkill(String name, Skill skill){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean editUser(String username, Account user) {
-		// TODO Auto-generated method stub
+	/**
+	 * Joe
+	 * @param name
+	 * @param ability
+	 * @return
+	 */
+	public boolean editAbility(String name, Ability ability){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean editCharacter(String name, Character Character) {
-		// TODO Auto-generated method stub
+
+
+	//DELETE
+	/**
+	 * Will
+	 * @param username
+	 * @param user
+	 * @return
+	 */
+	public boolean deleteUser(String username){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean editItem(String name, Item item) {
-		// TODO Auto-generated method stub
+
+	/**
+	 * Karl
+	 * @param name
+	 * @param Character
+	 * @return
+	 */
+	public boolean deleteCharacter(String name){
+		try {
+			return execute("DELETE FROM `character` WHERE `name`='"+name+"'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	/**
+	 * Karl
+	 * @param name
+	 * @param item
+	 * @return
+	 */
+	public boolean deleteItem(String name){
+		try {
+			return execute("DELETE FROM `items` WHERE `name`='"+name+"'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Malcolm
+	 * @param name
+	 * @param skill
+	 * @return
+	 */
+	public boolean deleteSkill(String name){
+		//TODO
 		return false;
 	}
 
-	@Override
-	public boolean editSkill(String name, Skill skill) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean editAbility(String name, Ability ability) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean deleteUser(String username) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean deleteCharacter(String name) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean deleteItem(String name) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean deleteSkill(String name) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean deleteAbility(String name) {
-		// TODO Auto-generated method stub
+	/**
+	 * Joe
+	 * @param name
+	 * @param ability
+	 * @return
+	 */
+	public boolean deleteAbility(String name){
+		//TODO
 		return false;
 	}
 }

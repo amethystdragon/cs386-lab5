@@ -5,9 +5,6 @@ import gui.GUI;
 import gui.GUI.ObjectType;
 
 public class Account {
-	//id of account - primary key - unique
-	private int ID;
-	
 	//login name of account - unique
 	private String account_name;
 	
@@ -29,7 +26,7 @@ public class Account {
 	/**
 	 * private Constructor
 	 */
-	private Account(String accountName, String password, String email,
+	public Account(String accountName, String password, String email,
 			String fName, String lName, int currency){
 		this.account_name = accountName;
 		this.password = password;
@@ -91,7 +88,7 @@ public class Account {
 	 * @return true if deleted else false
 	 */
 	public static boolean deleteAccount(Account account){
-		return deleteAccount(account.getID());
+		return false;
 	}
 	
 	/**
@@ -140,22 +137,7 @@ public class Account {
 		return account;
 	}
 	
-	/**
-	 * function to get next unused account id in db
-	 * @return
-	 */
-	private static int getNewID(){
-		int id = 1;
-		//TODO sql command to get collection of all used IDs
-		//while collection contains(id){ id++}
-		return id;
-	}
-	
 	//***Public Accessors***//
-	public int getID(){
-		return this.ID;
-	}
-	
 	public String getPassword(){
 		return this.password;
 	}

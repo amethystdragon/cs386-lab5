@@ -10,14 +10,20 @@ import helpers.Skill;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
+
+import dataAccess.DataAccess;
 
 public class DisplayPanel {
 	private static JPanel displayPanel;
@@ -30,6 +36,8 @@ public class DisplayPanel {
 		return displayPanel;
 	}
 	
+	//TODO I WILL HAVE THIS EDITABLE TOMORROW AS WELL AS
+	//TODO HAVING DATA ENTERED INTO THE FIELDS.
 	public static void setDisplayPanel(GUI.ObjectType type){
 		switch (type) {
 			case ACCOUNT:
@@ -85,7 +93,46 @@ public class DisplayPanel {
 				panel = new JPanel(new GridLayout(1,3));
 				//add, edit & delete buttons
 				JButton add = new JButton("CREATE ACCOUNT");
-				//TODO edit.addActionListener()
+				add.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent ae) {
+						try{
+							  JTextField userNameField = new JTextField(30);
+						      JTextField passwordField = new JTextField(30);
+						      JTextField emailField = new JTextField(30);
+						      JTextField fNameField = new JTextField(30);
+						      JTextField lNameField = new JTextField(30);
+						      JTextField currencyField = new JTextField(30);
+						      
+						      JPanel myPanel = new JPanel(new GridLayout(6,2));
+						      myPanel.add(new JLabel("UserName:"));
+						      myPanel.add(userNameField);
+						      myPanel.add(new JLabel("Password:"));
+						      myPanel.add(passwordField);
+						      myPanel.add(new JLabel("Email:"));
+						      myPanel.add(emailField);
+						      myPanel.add(new JLabel("First Name:"));
+						      myPanel.add(fNameField);
+						      myPanel.add(new JLabel("Last Name:"));
+						      myPanel.add(lNameField);
+						      myPanel.add(new JLabel("Currency:"));
+						      myPanel.add(currencyField);
+
+						      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+						               "Please Enter Account to Create", JOptionPane.OK_CANCEL_OPTION);
+						      if (result == JOptionPane.OK_OPTION) {
+						    	  Account addAccount = new Account(
+						    			  userNameField.getText(), passwordField.getText(),
+						    			  emailField.getText(), fNameField.getText(),
+						    			  lNameField.getText(), Integer.parseInt(currencyField.getText()));
+						    	  if(DataAccess.getInstance().addUser(addAccount)){
+								      DisplayPanel.setDisplayPanel(addAccount);
+						    	  }
+						      }
+							GUI.getGUI().updateMainPanel();
+						}catch(Exception e){}
+					}
+				});
 				panel.add(add);
 				JButton edit = new JButton("EDIT ACCOUNT");
 				panel.add(edit);
@@ -98,7 +145,7 @@ public class DisplayPanel {
 				panel.add(new JLabel("CHARACTERS OWNED BY ACCOUNT"));
 				bottomPanel.add(panel, BorderLayout.NORTH);
 				bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
-				
+				//TODO Fix
 				panel = new JPanel(new GridLayout(1,3));
 				JButton addCharacter = new JButton("Create Character");
 				panel.add(addCharacter);
@@ -219,6 +266,7 @@ public class DisplayPanel {
 				JPanel itemsPanel = new JPanel(new BorderLayout());
 				temp = new JPanel();
 				label = new JLabel("ITEMS OWNED BY CHARACTER");
+				//TODO fix
 				temp.add(label);
 				itemsPanel.add(temp, BorderLayout.NORTH);
 				itemsPanel.add(new JScrollBar(), BorderLayout.CENTER);
@@ -288,11 +336,40 @@ public class DisplayPanel {
 				subPanel = new JPanel(new GridLayout(1,3));
 				//add edit & delete buttons
 				JButton createAbility = new JButton("CREATE ABILITY");
-				//TODO 
+				createAbility.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent ae) {
+						try{
+							  JTextField abilityNameField = new JTextField(30);
+						      JTextField abilityDescriptionField = new JTextField(45);
+						      JTextField levelReqField = new JTextField(30);
+						      
+						      JPanel myPanel = new JPanel(new GridLayout(3,2));
+						      myPanel.add(new JLabel("Ability Name:"));
+						      myPanel.add(abilityNameField);
+						      myPanel.add(new JLabel("Description:"));
+						      myPanel.add(abilityDescriptionField);
+						      myPanel.add(new JLabel("Level Requirement:"));
+						      myPanel.add(levelReqField);
+
+						      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+						               "Please Enter Ability to Create", JOptionPane.OK_CANCEL_OPTION);
+						      if (result == JOptionPane.OK_OPTION) {
+						    	  Ability addAbility = new Ability(
+						    			  abilityNameField.getText(), abilityDescriptionField.getText(),
+						    			  Integer.parseInt(levelReqField.getText()));
+						    	  if(DataAccess.getInstance().addAbility(addAbility)){
+								      DisplayPanel.setDisplayPanel(addAbility);
+						    	  }
+						      }
+							GUI.getGUI().updateMainPanel();
+						}catch(Exception e){}
+					}
+				});
 				subPanel.add(createAbility);
 				edit = new JButton("EDIT ABILITY");
 				subPanel.add(edit);
-				delete = new JButton("DELETE ABILITY"); //TODO
+				delete = new JButton("DELETE ABILITY");
 				subPanel.add(delete);
 				panel.add(subPanel, BorderLayout.SOUTH);
 				topPanel.add(panel);
@@ -305,7 +382,7 @@ public class DisplayPanel {
 				bottomPanel.add(panel, BorderLayout.NORTH);
 				bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
 				
-				displayCharacter = new JButton("Display Item"); //TODO
+				displayCharacter = new JButton("Display Item"); //TODO cleanup
 				bottomPanel.add(displayCharacter,BorderLayout.SOUTH);
 				
 				displayPanel.add(topPanel);
@@ -400,7 +477,53 @@ public class DisplayPanel {
 				subPanel = new JPanel(new GridLayout(1,3));
 				//add edit & delete buttons
 				JButton createItem = new JButton("CREATE ITEM");
-				//TODO
+				createItem.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent ae) {
+						try{
+							  JTextField itemNameField = new JTextField(30);
+						      JTextField damageField = new JTextField(30);
+						      JTextField armorField = new JTextField(30);
+						      JTextField levelReqField = new JTextField(30);
+						      JComboBox<Item.Rarity> rarityBox = new JComboBox<Item.Rarity>();
+						      for(Item.Rarity rarity: Item.Rarity.values()){
+						    	  rarityBox.addItem(rarity);
+						      }
+						      JTextField valueField = new JTextField(30);
+						      JTextField modelField = new JTextField(30);
+						      
+						      JPanel myPanel = new JPanel(new GridLayout(7,2));
+						      myPanel.add(new JLabel("Item Name:"));
+						      myPanel.add(itemNameField);
+						      myPanel.add(new JLabel("Damage:"));
+						      myPanel.add(damageField);
+						      myPanel.add(new JLabel("Armor:"));
+						      myPanel.add(armorField);
+						      myPanel.add(new JLabel("Level Requirement:"));
+						      myPanel.add(levelReqField);
+						      myPanel.add(new JLabel("Rarity:"));
+						      myPanel.add(rarityBox);
+						      myPanel.add(new JLabel("Value:"));
+						      myPanel.add(valueField);
+						      myPanel.add(new JLabel("Model:"));
+						      myPanel.add(modelField);
+
+						      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+						               "Please Enter Item to Create", JOptionPane.OK_CANCEL_OPTION);
+						      if (result == JOptionPane.OK_OPTION) {
+						    	  Item addItem = new Item(
+						    			  itemNameField.getText(), Integer.parseInt(damageField.getText()),
+						    			  Integer.parseInt(armorField.getText()), Integer.parseInt(levelReqField.getText()),
+						    			  Item.Rarity.class.cast(rarityBox.getSelectedItem()), Integer.parseInt(valueField.getText()),
+						    			  modelField.getText(), null);
+						    	  if(DataAccess.getInstance().addItem(addItem)){
+								      DisplayPanel.setDisplayPanel(addItem);
+						    	  }
+						      }
+							GUI.getGUI().updateMainPanel();
+						}catch(Exception e){}
+					}
+				});
 				subPanel.add(createItem);
 				edit = new JButton("EDIT ITEM");
 				subPanel.add(edit);
@@ -420,7 +543,7 @@ public class DisplayPanel {
 				bottomPanel.add(panel, BorderLayout.NORTH);
 				bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
 				
-				displayCharacter = new JButton("Display Character"); //TODO
+				displayCharacter = new JButton("Display Character"); //TODO cleanup
 				bottomPanel.add(displayCharacter,BorderLayout.SOUTH);
 				
 				displayPanel.add(topPanel);
@@ -462,12 +585,40 @@ public class DisplayPanel {
 				//create edit & delete buttons
 				
 				JButton createSkill = new JButton("CREATE SKILL");
+				createSkill.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent ae) {
+						try{
+							  JTextField skillNameField = new JTextField(30);
+						      JTextField skillDescriptionField = new JTextField(45);
+						      JTextField levelReqField = new JTextField(30);
+						      
+						      JPanel myPanel = new JPanel(new GridLayout(3,2));
+						      myPanel.add(new JLabel("Skill Name:"));
+						      myPanel.add(skillNameField);
+						      myPanel.add(new JLabel("Description:"));
+						      myPanel.add(skillDescriptionField);
+						      myPanel.add(new JLabel("Level Requirement:"));
+						      myPanel.add(levelReqField);
+
+						      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+						               "Please Enter Skill to Create", JOptionPane.OK_CANCEL_OPTION);
+						      if (result == JOptionPane.OK_OPTION) {
+						    	  Skill addSkill = new Skill(
+						    			  skillNameField.getText(), skillDescriptionField.getText(),
+						    			  Integer.parseInt(levelReqField.getText()));
+						    	  if(DataAccess.getInstance().addSkill(addSkill)){
+								      DisplayPanel.setDisplayPanel(addSkill);
+						    	  }
+						      }
+							GUI.getGUI().updateMainPanel();
+						}catch(Exception e){}
+					}
+				});
 				subPanel.add(createSkill);
-				edit = new JButton("EDIT SKILL"); //TODO
-				//TODO edit.addActionListener()
+				edit = new JButton("EDIT SKILL");
 				subPanel.add(edit);
-				delete = new JButton("DELETE SKILL"); //TODO
-				//TODO add.addActionListener()
+				delete = new JButton("DELETE SKILL");
 				subPanel.add(delete);
 				panel.add(subPanel, BorderLayout.SOUTH);
 				topPanel.add(panel);
@@ -480,7 +631,7 @@ public class DisplayPanel {
 				bottomPanel.add(panel, BorderLayout.NORTH);
 				bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
 				
-				displayCharacter = new JButton("Display Character"); //TODO
+				displayCharacter = new JButton("Display Character");//TODO cleanup
 				bottomPanel.add(displayCharacter,BorderLayout.SOUTH);
 				
 				displayPanel.add(topPanel);
@@ -490,6 +641,7 @@ public class DisplayPanel {
 	}
 	
 	protected static void setDisplayPanel(Account account){
+			final Account thisAccount = account;
 			displayPanel = new JPanel(new GridLayout(2,1));
 			JPanel topPanel = new JPanel(new GridLayout(8,1));
 			topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -534,7 +686,7 @@ public class DisplayPanel {
 			topPanel.add(panel);
 			panel = new JPanel(new GridLayout(1,2));
 			panel.add(new JLabel("  Ingame Currency"));
-			field = new JTextField(account.getCurrency());
+			field = new JTextField(Integer.toString(account.getCurrency()));
 			field.setEditable(false);
 			panel.add(field);
 			topPanel.add(panel);
@@ -542,13 +694,101 @@ public class DisplayPanel {
 			panel = new JPanel(new GridLayout(1,3));
 			//add, edit & delete buttons
 			JButton add = new JButton("CREATE ACCOUNT");
-			//TODO edit.addActionListener()
+			add.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ae) {
+					try{
+						  JTextField userNameField = new JTextField(30);
+					      JTextField passwordField = new JTextField(30);
+					      JTextField emailField = new JTextField(30);
+					      JTextField fNameField = new JTextField(30);
+					      JTextField lNameField = new JTextField(30);
+					      JTextField currencyField = new JTextField(30);
+					      
+					      JPanel myPanel = new JPanel(new GridLayout(6,2));
+					      myPanel.add(new JLabel("UserName:"));
+					      myPanel.add(userNameField);
+					      myPanel.add(new JLabel("Password:"));
+					      myPanel.add(passwordField);
+					      myPanel.add(new JLabel("Email:"));
+					      myPanel.add(emailField);
+					      myPanel.add(new JLabel("First Name:"));
+					      myPanel.add(fNameField);
+					      myPanel.add(new JLabel("Last Name:"));
+					      myPanel.add(lNameField);
+					      myPanel.add(new JLabel("Currency:"));
+					      myPanel.add(currencyField);
+
+					      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+					               "Please Enter Account to Create", JOptionPane.OK_CANCEL_OPTION);
+					      if (result == JOptionPane.OK_OPTION) {
+					    	  Account addAccount = new Account(
+					    			  userNameField.getText(), passwordField.getText(),
+					    			  emailField.getText(), fNameField.getText(),
+					    			  lNameField.getText(), Integer.parseInt(currencyField.getText()));
+					    	  if(DataAccess.getInstance().addUser(addAccount)){
+							      DisplayPanel.setDisplayPanel(addAccount);
+					    	  }
+					      }
+						GUI.getGUI().updateMainPanel();
+					}catch(Exception e){}
+				}
+			});
 			panel.add(add);
 			JButton edit = new JButton("EDIT ACCOUNT");
-			//TODO edit.addActionListener()
+			add.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ae) {
+					try{
+						  JTextField userNameField = new JTextField(30);
+						  userNameField.setEditable(false);
+						  userNameField.setText(thisAccount.getAccountName());
+					      JTextField passwordField = new JTextField(30);
+					      passwordField.setText(thisAccount.getPassword());
+					      JTextField emailField = new JTextField(30);
+					      emailField.setText(thisAccount.getEmail());
+					      JTextField fNameField = new JTextField(30);
+					      fNameField.setText(thisAccount.getFirstName());
+					      JTextField lNameField = new JTextField(30);
+					      lNameField.setText(thisAccount.getLastName());
+					      JTextField currencyField = new JTextField(30);
+					      currencyField.setText(Integer.toString(thisAccount.getCurrency()));
+					      
+					      JPanel myPanel = new JPanel(new GridLayout(6,2));
+					      myPanel.add(new JLabel("UserName:"));
+					      myPanel.add(userNameField);
+					      myPanel.add(new JLabel("Password:"));
+					      myPanel.add(passwordField);
+					      myPanel.add(new JLabel("Email:"));
+					      myPanel.add(emailField);
+					      myPanel.add(new JLabel("First Name:"));
+					      myPanel.add(fNameField);
+					      myPanel.add(new JLabel("Last Name:"));
+					      myPanel.add(lNameField);
+					      myPanel.add(new JLabel("Currency:"));
+					      myPanel.add(currencyField);
+
+					      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+					               "Please Enter Account Information to Edit", JOptionPane.OK_CANCEL_OPTION);
+					      if (result == JOptionPane.OK_OPTION) {
+					    	  Account editAccount = new Account(
+					    			  userNameField.getText(), passwordField.getText(),
+					    			  emailField.getText(), fNameField.getText(),
+					    			  lNameField.getText(), Integer.parseInt(currencyField.getText()));
+					    	  if(DataAccess.getInstance().editUser(editAccount)){
+							      DisplayPanel.setDisplayPanel(editAccount);
+							      ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
+					    	  }
+					      }
+						GUI.getGUI().updateMainPanel();
+					}catch(Exception e){}
+				}
+			});
 			panel.add(edit);
 			JButton delete = new JButton("DELETE ACCOUNT");
-			//TODO add.addActionListener()
+			try{
+			DataAccess.getInstance().deleteUser(thisAccount.getAccountName());
+			}catch(Exception e){}
 			panel.add(delete);
 			topPanel.add(panel);
 			
@@ -572,8 +812,9 @@ public class DisplayPanel {
 			displayPanel.add(bottomPanel);
 	}
 	
+	
 	protected static void setDisplayPanel(Character character){
-		
+		final Character thisCharacter = character;
 		displayPanel = new JPanel(new GridLayout(2,1));
 		JPanel topPanel = new JPanel(new BorderLayout());
 		topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -655,11 +896,11 @@ public class DisplayPanel {
 		//account
 		subPanel = new JPanel(new GridLayout(1,3));
 		subPanel.add(new JLabel("  Account"));
-		field = new JTextField(Character.getParent(character.getID()).getAccountName());
+		field = new JTextField(Character.getParent(character.getName()).getAccountName());
 		field.setEditable(false);
 		subPanel.add(field);
 		JButton displayAccount = new JButton("Display Account");
-		//TODO display Account
+		//TODO
 		subPanel.add(displayAccount);
 		panel.add(subPanel);
 
@@ -669,7 +910,12 @@ public class DisplayPanel {
 		//TODO edit.addActionListener()
 		subPanel.add(edit);
 		JButton delete = new JButton("DELETE");
-		//TODO add.addActionListener()
+		try{
+			DataAccess.getInstance().deleteUser(thisCharacter.getName());
+			DisplayPanel.setDisplayPanel(GUI.ObjectType.CHARACTER);
+			//ResultsPanel.setResultsPanel(); //TODO
+			GUI.getGUI().updateMainPanel();
+		}catch(Exception e){}
 		subPanel.add(delete);
 		panel.add(subPanel);
 		
@@ -726,6 +972,7 @@ public class DisplayPanel {
 	}
 	
 	protected static void setDisplayPanel(Item item){
+		final Item thisItem = item;
 		displayPanel = new JPanel(new GridLayout(2,1));
 		JPanel topPanel = new JPanel(new BorderLayout());
 		topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -812,13 +1059,69 @@ public class DisplayPanel {
 		subPanel = new JPanel(new GridLayout(1,3));
 		//add edit & delete buttons
 		JButton createItem = new JButton("CREATE ITEM");
-		//TODO action
+		createItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					  JTextField itemNameField = new JTextField(30);
+				      JTextField damageField = new JTextField(30);
+				      JTextField armorField = new JTextField(30);
+				      JTextField levelReqField = new JTextField(30);
+				      JComboBox<Item.Rarity> rarityBox = new JComboBox<Item.Rarity>();
+				      for(Item.Rarity rarity: Item.Rarity.values()){
+				    	  rarityBox.addItem(rarity);
+				      }
+				      JTextField valueField = new JTextField(30);
+				      JTextField modelField = new JTextField(30);
+				      
+				      JPanel myPanel = new JPanel(new GridLayout(7,2));
+				      myPanel.add(new JLabel("Item Name:"));
+				      myPanel.add(itemNameField);
+				      myPanel.add(new JLabel("Damage:"));
+				      myPanel.add(damageField);
+				      myPanel.add(new JLabel("Armor:"));
+				      myPanel.add(armorField);
+				      myPanel.add(new JLabel("Level Requirement:"));
+				      myPanel.add(levelReqField);
+				      myPanel.add(new JLabel("Rarity:"));
+				      myPanel.add(rarityBox);
+				      myPanel.add(new JLabel("Value:"));
+				      myPanel.add(valueField);
+				      myPanel.add(new JLabel("Model:"));
+				      myPanel.add(modelField);
+
+				      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+				               "Please Enter Item to Create", JOptionPane.OK_CANCEL_OPTION);
+				      if (result == JOptionPane.OK_OPTION) {
+				    	  Item addItem = new Item(
+				    			  itemNameField.getText(), Integer.parseInt(damageField.getText()),
+				    			  Integer.parseInt(armorField.getText()), Integer.parseInt(levelReqField.getText()),
+				    			  Item.Rarity.class.cast(rarityBox.getSelectedItem()), Integer.parseInt(valueField.getText()),
+				    			  modelField.getText(), null);
+				    	  if(DataAccess.getInstance().addItem(addItem)){
+						      DisplayPanel.setDisplayPanel(addItem);
+				    	  }
+				      }
+					GUI.getGUI().updateMainPanel();
+				}catch(Exception e){}
+			}
+		});
 		subPanel.add(createItem);
 		JButton edit = new JButton("EDIT ITEM");
 		//TODO edit.addActionListener()
 		subPanel.add(edit);
 		JButton delete = new JButton("DELETE ITEM");
-		//TODO add.addActionListener()
+		delete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					DataAccess.getInstance().deleteItem(thisItem.getName());
+					DisplayPanel.setDisplayPanel(GUI.ObjectType.ITEM);
+					//ResultsPanel.setResultsPanel(); //TODO
+					GUI.getGUI().updateMainPanel();
+				}catch(Exception e){}
+			}
+		});
 		subPanel.add(delete);
 		panel.add(subPanel);
 		
@@ -877,6 +1180,36 @@ public class DisplayPanel {
 		//create edit & delete buttons
 		
 		JButton createSkill = new JButton("CREATE SKILL");
+		createSkill.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					  JTextField skillNameField = new JTextField(30);
+				      JTextField skillDescriptionField = new JTextField(45);
+				      JTextField levelReqField = new JTextField(30);
+				      
+				      JPanel myPanel = new JPanel(new GridLayout(3,2));
+				      myPanel.add(new JLabel("Skill Name:"));
+				      myPanel.add(skillNameField);
+				      myPanel.add(new JLabel("Description:"));
+				      myPanel.add(skillDescriptionField);
+				      myPanel.add(new JLabel("Level Requirement:"));
+				      myPanel.add(levelReqField);
+
+				      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+				               "Please Enter Skill to Create", JOptionPane.OK_CANCEL_OPTION);
+				      if (result == JOptionPane.OK_OPTION) {
+				    	  Skill addSkill = new Skill(
+				    			  skillNameField.getText(), skillDescriptionField.getText(),
+				    			  Integer.parseInt(levelReqField.getText()));
+				    	  if(DataAccess.getInstance().addSkill(addSkill)){
+						      DisplayPanel.setDisplayPanel(addSkill);
+				    	  }
+				      }
+					GUI.getGUI().updateMainPanel();
+				}catch(Exception e){}
+			}
+		});
 		subPanel.add(createSkill);
 		JButton edit = new JButton("EDIT SKILL"); //TODO
 		//TODO add.addActionListener()
@@ -937,7 +1270,36 @@ public class DisplayPanel {
 		JPanel subPanel = new JPanel(new GridLayout(1,3));
 		//add edit & delete buttons
 		JButton createAbility = new JButton("CREATE ABILITY");
-		//TODO actionlistener
+		createAbility.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					  JTextField abilityNameField = new JTextField(30);
+				      JTextField abilityDescriptionField = new JTextField(45);
+				      JTextField levelReqField = new JTextField(30);
+				      
+				      JPanel myPanel = new JPanel(new GridLayout(3,2));
+				      myPanel.add(new JLabel("Ability Name:"));
+				      myPanel.add(abilityNameField);
+				      myPanel.add(new JLabel("Description:"));
+				      myPanel.add(abilityDescriptionField);
+				      myPanel.add(new JLabel("Level Requirement:"));
+				      myPanel.add(levelReqField);
+
+				      int result = JOptionPane.showConfirmDialog(null, myPanel, 
+				               "Please Enter Ability to Create", JOptionPane.OK_CANCEL_OPTION);
+				      if (result == JOptionPane.OK_OPTION) {
+				    	  Ability addAbility = new Ability(
+				    			  abilityNameField.getText(), abilityDescriptionField.getText(),
+				    			  Integer.parseInt(levelReqField.getText()));
+				    	  if(DataAccess.getInstance().addAbility(addAbility)){
+						      DisplayPanel.setDisplayPanel(addAbility);
+				    	  }
+				      }
+					GUI.getGUI().updateMainPanel();
+				}catch(Exception e){}
+			}
+		});
 		subPanel.add(createAbility);
 		JButton edit = new JButton("EDIT ABILITY"); //TODO
 		//TODO edit.addActionListener()

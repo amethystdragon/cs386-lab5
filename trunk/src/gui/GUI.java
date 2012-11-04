@@ -28,6 +28,7 @@ public class GUI extends JFrame{
 	 * Generated version ID
 	 */
 	private static final long serialVersionUID = 7518660021163117839L;
+	private static GUI gui;
 	
 	/**
 	 * Types
@@ -38,7 +39,9 @@ public class GUI extends JFrame{
 
 	public GUI() {
 		//Sets up the window
-		super("RPGame Database Prototype");		
+		super("RPGame Database Prototype");
+
+		gui = this;
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setSize(1200,800);
@@ -104,6 +107,10 @@ public class GUI extends JFrame{
 		menu.setActionCommand(name);
 		menu.setAccelerator(KeyStroke.getKeyStroke(name.charAt(0), Event.CTRL_MASK));
 		return menu;
+	}
+	
+	public static GUI getGUI(){
+		return gui;
 	}
 	
 	/**

@@ -9,11 +9,25 @@ import java.util.List;
 public class Character {
 	
 	public enum Race{
-		Human, Elf, Dwarf, Hobbit, Gnome
+		Human, Elf, Dwarf, Hobbit, Gnome;
+
+		public static Race getRace(String string) {
+			switch(string){
+			case "Human":
+				return Human;
+			case "Elf":
+				return Elf;
+			case "Dwarf":
+				return Dwarf;
+			case "Hobbit":
+				return Hobbit;
+			case "Gnome":
+				return Gnome;
+			default:
+				return null;
+			}
+		}
 	}
-	
-	//character ID - primary key - unique
-	private int ID;
 	
 	//character name - NON-unique
 	private String name;
@@ -49,14 +63,13 @@ public class Character {
 	private int experience;
 	
 	//owner account id
-	private int accountID;
+	private String accountUsername;
 	
 	/**
 	 * private Constructor
 	 */
-	private Character(int ID, String name, Race race, String model, int strength,
-			int constitution, int intelligence, int wisdom, int agility, int dexterity, int level, int experience, int accountID){
-		this.ID = ID;
+	public Character(String name, Race race, String model, int strength,
+			int constitution, int intelligence, int wisdom, int agility, int dexterity, int level, int experience, String accountID){
 		this.name = name;
 		this.race = race;
 		this.model = model;
@@ -68,7 +81,7 @@ public class Character {
 		this.dexterity = dexterity;
 		this.level = level;
 		this.experience = experience;
-		this.accountID = accountID;
+		this.accountUsername = accountID;
 	}
 	
 	/**
@@ -91,7 +104,6 @@ public class Character {
 	public static boolean addCharacter(int accountID, String name, Race race, int age, String model, int strength,
 			int constitution, int intelligence, int wisdom, int agility, int dexterity, int level, int experience){
 		boolean added = false;
-		int id = getNewID();
 		//TODO sql command to add char to db set added = true if added
 		//no duplicate character names on same account, enforced in code here
 		return added;
@@ -114,7 +126,9 @@ public class Character {
 	 * @return
 	 */
 	public static boolean deleteCharacter(Character character){
-		return deleteCharacter(character.getID());
+		//TODO
+		return false;
+//		return deleteCharacter(character.getID());
 	}
 	
 	/**
@@ -184,7 +198,7 @@ public class Character {
 	 * @param ID - character ID
 	 * @return - parent account if found else null
 	 */
-	public static Account getParent(int ID){
+	public static Account getParent(String name){
 		Account parent = null;
 		//TODO sql command to find parent of character by character ID
 		return parent;
@@ -202,22 +216,7 @@ public class Character {
 		return skills;
 	}
 	
-	/**
-	 * finds next unused ID for primary key
-	 * @return - next valid new id key
-	 */
-	private static int getNewID(){
-		int id = 1;
-		//TODO sql command to get collection of all used IDs
-		//while collection contains(id){ id++}
-		return id;
-	}
-	
 	//***Public Accessors***//
-	public int getID(){
-		return this.ID;
-	}
-	
 	public String getName(){
 		return this.name;
 	}
@@ -262,17 +261,14 @@ public class Character {
 		return this.experience;
 	}
 	
-	public Account getAccount(){
-		Account parentAccount = null;
-		parentAccount = Account.findAccount(this.accountID);
-		return parentAccount;
-	}
-	
-	public int getAccountID(){
-		return this.accountID;
+	public String getAccountUsername(){
+		return this.accountUsername;
 	}
 
 	public ObjectType getType() {
 		return GUI.ObjectType.CHARACTER;
+	}
+	public String toString(){
+		return name + ": " + race;
 	}
 }

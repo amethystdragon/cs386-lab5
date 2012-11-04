@@ -4,9 +4,6 @@ import gui.GUI;
 import gui.GUI.ObjectType;
 
 public class Ability {
-	//ID of Ability - primary key - unique
-	private int ID;
-	
 	//name of ability - unique
 	private String name;
 	
@@ -22,9 +19,8 @@ public class Ability {
 	 * @param description
 	 * @param level
 	 */
-	private Ability(int ID, String name, String description, int level)
+	public Ability(String name, String description, int level)
 	{
-		this.ID = ID;
 		this.name = name;
 		this.description = description;
 		this.level = level;
@@ -39,7 +35,6 @@ public class Ability {
 	 */
 	public static boolean addAbility(String name, String description, int level){
 		boolean added = false;
-		int ID = getNewID();
 		if(findAbility(name) == null){
 			//TODO sql command to add ability to database
 			//set result = true if added
@@ -58,18 +53,6 @@ public class Ability {
 		
 		return result;
 	}
-	
-	/**
-	 * delete ability by ID
-	 * @param ability_ID
-	 * @return - true if deleted else false
-	 */
-	public static boolean deleteAbility(int ability_ID){
-		boolean result = false;
-		//TODO query sql for ability by ID if found delete row if successful result = true 
-		
-		return result;
-	}	
 	
 	/**
 	 * delete ability by Ability object
@@ -107,18 +90,7 @@ public class Ability {
 		return result;
 	}
 	
-	private static int getNewID(){
-		int id = 1;
-		//TODO sql command to get collection of all used IDs
-		//while collection contains(id){ id++}
-		return id;
-	}
-	
 	//***Public Accessors***//
-	
-	public int getID(){
-		return this.ID;
-	}
 	
 	public String getName(){
 		return this.name;

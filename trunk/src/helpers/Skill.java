@@ -5,9 +5,6 @@ import gui.GUI.ObjectType;
 
 public class Skill {
 	
-	//id of skill primary key
-	private int ID;
-	
 	//name of skill
 	private String name;
 	
@@ -24,9 +21,8 @@ public class Skill {
 	 * @param description
 	 * @param level
 	 */
-	private Skill(int ID, String name, String description, int level)
+	public Skill(String name, String description, int level)
 	{
-		this.ID = ID;
 		this.name = name;
 		this.description = description;
 		this.level = level;
@@ -34,7 +30,6 @@ public class Skill {
 	
 	public static boolean addSkill(String name, String description, int level){
 		boolean added = false;
-		int ID = getNewID();
 		if(findSkill(name) == null){
 			//TODO sql command to add skill to database
 			//set result = true if added
@@ -72,7 +67,7 @@ public class Skill {
 	 * @return - true if deleted else false
 	 */
 	public static boolean deleteSkill(Skill skill){
-		return deleteSkill(skill.getID());
+		return false;
 	}	
 	
 	/**
@@ -99,19 +94,7 @@ public class Skill {
 		return result;
 	}
 	
-	private static int getNewID(){
-		int id = 1;
-		//TODO sql command to get collection of all used IDs
-		//while collection contains(id){ id++}
-		return id;
-	}
-	
 	//***Public Accessors***//
-	
-	public int getID(){
-		return this.ID;
-	}
-	
 	public String getName(){
 		return this.name;
 	}

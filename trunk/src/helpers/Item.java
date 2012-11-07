@@ -6,7 +6,26 @@ import gui.GUI.ObjectType;
 public class Item {
 	
 	public enum Rarity{
-		Common, Uncommon, Rare, Mythic, Legendary, Unique
+		Common, Uncommon, Rare, Mythic, Legendary, Unique;
+
+		public static Rarity getRRarity(String string) {
+			switch(string){
+			case "Common":
+				return Common;
+			case "Uncommon":
+				return Uncommon;
+			case "Rare":
+				return Rare;
+			case "Mythic":
+				return Mythic;
+			case "Legendary":
+				return Legendary;
+			case "Unique":
+				return Unique;
+			default:
+				return null;
+			}
+		}
 	}
 	
 	//name of item - unique

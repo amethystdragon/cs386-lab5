@@ -229,11 +229,11 @@ public class DataAccess {
 	 */
 	public List<Character> searchCharacter(String name, Character.Race race, String username){
 		String query = "SELECT `name`,`race`,`model`,`strength`,`constitution`,`intelligence`,`wisdom`,`agility`,`dexterity`,`level`,`experience`,`account_ID` FROM `character`";
-		if(!name.isEmpty() && race!=null && !username.isEmpty()){
+		if(!name.isEmpty() || race!=null || !username.isEmpty()){
 			boolean first = true;
 			query += " WHERE ";
 			if(!name.isEmpty()){
-				query += "`name`='"+name+"'";
+				query += "`name` LIKE '%"+name+"%'";
 				if(first) first = false;
 			}
 			if(race!=null){
@@ -243,18 +243,15 @@ public class DataAccess {
 			}
 			if(!username.isEmpty()){
 				if(!first) query += " AND ";
-				query += "`account_account_ID`=(SELECT `account_ID` FROM `Account` WHERE `account_name`='"+username+"')";
+				query += "`account_account_ID` IN (SELECT `account_ID` FROM `Account` WHERE `account_name`='"+username+"')";
 			}
 		}
 		//TODO FIX THE ACCOUNT ID RETURN
 		List<Character> characters = null;
 		try {
-			System.out.println(1);
 			ResultSet result = query(query);
-			System.out.println(2);
 			characters = new ArrayList<Character>();
 			while(result.next()){
-				System.out.println(3);
 				Character newChar = new Character(result.getString(1), 
 						Race.getRace(result.getString(2)), 
 						result.getString(3), 
@@ -267,7 +264,6 @@ public class DataAccess {
 						Integer.parseInt(result.getString(10)),
 						Integer.parseInt(result.getString(11)),
 						result.getString(12));
-				System.out.println(4);
 				characters.add(newChar);
 				System.out.println(newChar);
 			}
@@ -337,7 +333,7 @@ public class DataAccess {
 	 * @param level
 	 * @return the list of matching skills
 	 */
-	public List<Skill> searchSkill(String name, int level){
+	public List<Skill> searchSkill(String name, int level, String value){
 		List<Skill> skillList = null;
 		ResultSet result = null;
 		String query = "SELECT * FROM `skill`";
@@ -384,7 +380,7 @@ public class DataAccess {
 	 * @param level
 	 * @return
 	 */
-	public List<Ability> searchAbility(String name, int level){
+	public List<Ability> searchAbility(String name, int level, String value){
 		//TODO
 		return null;
 	}
@@ -401,8 +397,8 @@ public class DataAccess {
 		boolean added = false;
 		try{
 			added = this.execute("INSERT INTO `account` (`account_name, `password`, `email`, `first_name`, `last_name`, " +
-					"`ingame_currency`) VALUES ('" + user.getAccountName() + "\', \'" + user.getPassword() + "\', \'" +
-					user.getEmail() + "\', \'" + user.getFirstName() + "\', \'" + user.getLastName() + "\', \'" + user.getCurrency() + "\');");
+					"`ingame_currency`) VALUES ('" + user.getAccountName() + "', '" + user.getPassword() + "', '" +
+					user.getEmail() + "', '" + user.getFirstName() + "', '" + user.getLastName() + "', '" + user.getCurrency() + "');");
 		}catch(Exception e){
 		}
 		return added;

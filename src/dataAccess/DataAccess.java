@@ -396,7 +396,7 @@ public class DataAccess {
 	public boolean addUser(Account user){
 		boolean added = false;
 		try{
-			added = this.execute("INSERT INTO `account` (`account_name, `password`, `email`, `first_name`, `last_name`, " +
+			added = execute("INSERT INTO `account` (`account_name, `password`, `email`, `first_name`, `last_name`, " +
 					"`ingame_currency`) VALUES ('" + user.getAccountName() + "', '" + user.getPassword() + "', '" +
 					user.getEmail() + "', '" + user.getFirstName() + "', '" + user.getLastName() + "', '" + user.getCurrency() + "');");
 		}catch(Exception e){
@@ -505,8 +505,21 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean editUser(Account user){
-		//TODO
-		return false;
+		boolean edited = false;
+		String query = "UPDATE `account` SET " +
+		"`account_name`='"+user.getAccountName() +
+		"', `password`='"+ user.getPassword() +
+		"', `email`='" + user.getEmail() +
+		"', `first_name`='" + user.getFirstName() +
+		"', `last_name`='" + user.getLastName() +
+		"', `ingame_currency`='" + user.getCurrency()+
+		"' WHERE `account_name`='"+user.getAccountName()+"'";
+		try {
+			edited = execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return edited;
 	}
 
 
@@ -609,8 +622,19 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean deleteUser(String username){
-		//TODO
-		return false;
+		boolean deleted = false;
+		Account user = Account.findAccount(username);
+		if (user != null){
+			try{
+				for(Character character : DataAccess.getInstance().searchCharacter("", null, username)){
+					//TODO delete from character hasitem reference table?
+					DataAccess.getInstance().deleteCharacter(character.getName());
+				}
+				execute("DELETE FROM `account` WHERE `account_name` = '" + username + "'");
+				deleted = true;
+			}catch(Exception e){e.printStackTrace();}
+		}
+		return deleted;
 	}
 
 
@@ -623,6 +647,7 @@ public class DataAccess {
 	public boolean deleteCharacter(String name){
 		try {
 			return execute("DELETE FROM `character` WHERE `name`='"+name+"'");
+			//TODO delete from item reference table?
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

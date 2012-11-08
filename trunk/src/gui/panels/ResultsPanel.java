@@ -15,6 +15,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 
 public class ResultsPanel {
@@ -38,7 +40,7 @@ public class ResultsPanel {
 	 * 
 	 * @param list list of objects from the helpers package
 	 */
-	public static void setResultsPanel(List<?> list){
+	public static void setResultsPanel(final List<?> list){
 		//Sets the holding panel
 		resultsPanel = new JPanel(new BorderLayout());
 		JPanel panel = new JPanel();
@@ -48,33 +50,49 @@ public class ResultsPanel {
 
 		//Determines the type of helper and iterates through the list
 		//Also adds a JLabel
-		Object listItem = list.get(0);
+		final Object listItem = list.get(0);
 		if(listItem instanceof Ability){
-				for(Object o : list) 
-					listModel.addElement(((Ability)o).getName());
-				panel.add(new JLabel("ABILITY SEARCH RESULTS"));
+			panel.add(new JLabel("ABILITY SEARCH RESULTS"));
+			for(Object o : list) 
+				listModel.addElement(((Ability)o).getName());
 		}else if(listItem instanceof Account){
-				for(Object o : list) 
-					listModel.addElement(((Account)o).getAccountName());
-				panel.add(new JLabel("ACCOUNT SEARCH RESULTS"));
+			panel.add(new JLabel("ACCOUNT SEARCH RESULTS"));
+			for(Object o : list) 
+				listModel.addElement(((Account)o).getAccountName());
 		}else if(listItem instanceof Character){
-				for(Object o : list) 
-					listModel.addElement(((Character)o).getName());
-				panel.add(new JLabel("CHARACTER SEARCH RESULTS"));
+			panel.add(new JLabel("CHARACTER SEARCH RESULTS"));
+			for(Object o : list) 
+				listModel.addElement(((Character)o).getName());
 		}else if(listItem instanceof Item){
-				for(Object o : list) 
-					listModel.addElement(((Item)o).getName());
-				panel.add(new JLabel("ITEM SEARCH RESULTS"));
+			panel.add(new JLabel("ITEM SEARCH RESULTS"));
+			for(Object o : list) 
+				listModel.addElement(((Item)o).getName());
 		}else if(listItem instanceof Skill){
-				for(Object o : list) 
-					listModel.addElement(((Skill)o).getName());
-				panel.add(new JLabel("SKILL SEARCH RESULTS"));
+			panel.add(new JLabel("SKILL SEARCH RESULTS"));
+			for(Object o : list) 
+				listModel.addElement(((Skill)o).getName());
 		}
 		
 		//Adds the list model to the JList
-		JList<String> resultsList = new JList<String>(listModel);
-		resultsList.setSelectedIndex(0);
+		final JList<String> resultsList = new JList<String>(listModel);
 		resultsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		//Sets up the listener for which element is selected 
+		resultsList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if(listItem instanceof Ability){
+					DisplayPanel.setDisplayPanel((Ability)list.get(resultsList.getSelectedIndex()));
+				}else if(listItem instanceof Account){
+					DisplayPanel.setDisplayPanel((Account)list.get(resultsList.getSelectedIndex()));
+				}else if(listItem instanceof Character){
+					DisplayPanel.setDisplayPanel((Character)list.get(resultsList.getSelectedIndex()));
+				}else if(listItem instanceof Item){
+					DisplayPanel.setDisplayPanel((Item)list.get(resultsList.getSelectedIndex()));
+				}else if(listItem instanceof Skill){
+					DisplayPanel.setDisplayPanel((Skill)list.get(resultsList.getSelectedIndex()));
+				}
+			}
+		});
 		//Wraps in a scroll pane
 		JScrollPane scrollPane = new JScrollPane(resultsList);
 		//Adds to the panel

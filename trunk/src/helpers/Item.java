@@ -51,12 +51,12 @@ public class Item {
 	
 	
 	//id of associated ability
-	private Ability ability;
+	private String ability;
 	
 	/**
 	 * private constructor
 	 */
-	public Item(String name, int damage, int armor, int level, Rarity rarity, int value, String model, Ability ability){
+	public Item(String name, int damage, int armor, int level, Rarity rarity, int value, String model, String ability){
 		this.name = name;
 		this.damage = damage;
 		this.armor = armor;
@@ -66,79 +66,6 @@ public class Item {
 		this.model = model;
 		this.ability = ability;
 	}
-	
-	public static boolean addItem(String name, int damage, int armor, int level, Rarity rarity, int value, String model, int weight, int refinement, int abilityID){
-		boolean added = false;
-		//TODO sql command to add new item to db
-		//if added set added = true
-		return added;
-	}
-	
-	/**
-	 * method to delete item by id
-	 * @param ID
-	 * @return - true if deleted else false
-	 */
-	public static boolean deleteItem(int ID){
-		boolean deleted = false;
-		//TODO sql command to delete item by id
-		return deleted;
-	}
-	
-	/**
-	 * method to delete item by name
-	 * @param name
-	 * @return - true if deleted else false
-	 */
-	public static boolean deleteItem(String name){
-		boolean deleted = false;
-		//TODO sql command to delete item by name
-		return deleted;
-	}
-	
-	/**
-	 * method to delete item by object
-	 * @param item
-	 * @return - true if deleted else false
-	 */
-	public static boolean deleteItem(Item item){
-		return false; // TODO deleteItem(item.getID());
-	}
-	
-	/**
-	 * method to find item by id
-	 * @param ID
-	 * @return - item if found else null
-	 */
-	public static Item findItem(int ID){
-		Item result = null;
-		//TODO sql command to get item by id
-		return result;
-	}
-	
-	/**
-	 * method to find item by name
-	 * @param name
-	 * @return - item if found else null
-	 */
-	public static Item findItem(String name){
-		Item result = null;
-		//TODO sql command to get item by name
-		return result;
-	}
-	
-	/**
-	 * set refinement
-	 * @param refinement
-	 * @return - true if set else false
-	 */
-	public boolean setRefinement(int refinement){
-		boolean set = false;
-		//TODO sql command to set refinement of this item in db
-		//if success set this.refinement = refinement set = true
-		return set;
-	}
-	
 	///***Public Accessors***///
 	public String getName(){
 		return this.name;
@@ -169,7 +96,7 @@ public class Item {
 	}
 	
 	
-	public Ability getAbility(){
+	public String getAbility(){
 		return this.ability;
 	}
 

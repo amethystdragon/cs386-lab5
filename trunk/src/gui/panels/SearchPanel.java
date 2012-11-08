@@ -189,7 +189,10 @@ public class SearchPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchSkill(skill.getText(), Integer.parseInt(levelReq.getText()), ((String)overUnder.getSelectedItem())));
+						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchSkill(
+								skill.getText(), 
+								(levelReq.getText().isEmpty())?-1:Integer.parseInt(levelReq.getText()), 
+								((String)overUnder.getSelectedItem())));
 						GUI.getGUI().updateMainPanel();
 					} catch (ClassNotFoundException | SQLException e1) {
 						e1.printStackTrace();
@@ -228,7 +231,10 @@ public class SearchPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchAbility(ability.getText(), Integer.parseInt(alevelReq.getText()), ((String)aoverUnder.getSelectedItem())));
+						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchAbility(
+								ability.getText(), 
+								(alevelReq.getText().isEmpty())?-1:Integer.parseInt(alevelReq.getText()), 
+								((String)aoverUnder.getSelectedItem())));
 						GUI.getGUI().updateMainPanel();
 					} catch (ClassNotFoundException | SQLException e1) {
 						e1.printStackTrace();

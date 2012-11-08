@@ -172,35 +172,27 @@ public class DataAccess {
 		List<Account> accounts = new LinkedList<Account>();
 		String query = new String("SELECT * FROM `account`");
 		if(!username.isEmpty() || !fname.isEmpty() || !lname.isEmpty() || !email.isEmpty()){
-			boolean first = false;
+			boolean first = true;
 			query += " WHERE";
 			if(!username.isEmpty()){
 				query += " `account_name`='" + username + "'";
-				first = true;
+				first = false;
 			}
 			if(!fname.isEmpty()){
-				if(!first){
-					query += " AND";
-					first = true;
-				}	
+				if(first) first = false;
+				else query += " AND";
 				query += " `first_name`='" + fname + "'";
 			}
 			if(!lname.isEmpty()){
-				if(first){
-					query += " AND";
-					first = true;
-				}
+				if(first) first = false;
+				else query += " AND";
 				query += " `last_name`='" + lname + "'";
 			}
 			if(!email.isEmpty()){
-				if(first){
-					query += " AND";
-					first = true;
-				}
+				if(!first) query += " AND";
 				query += " `email`='" + email + "'";
 			}
 		}
-		query += ";";
 		try{
 			ResultSet result = query(query);
 			while(result.next()){
@@ -215,7 +207,7 @@ public class DataAccess {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return null;
+		return accounts;
 	}
 
 	/**
@@ -228,12 +220,15 @@ public class DataAccess {
 	 * @return
 	 */
 	public List<Character> searchCharacter(String name, Character.Race race, String username){
-		String query = "SELECT `name`,`race`,`model`,`strength`,`constitution`,`intelligence`,`wisdom`,`agility`,`dexterity`,`level`,`experience`,`account_ID` FROM `character`";
+		String query = "SELECT c.`name` , c.`race` , c.`model` , c.`strength` , " +
+				"c.`constitution` , c.`intelligence` , c.`wisdom` , c.`agility` , " +
+				"c.`dexterity` , c.`level` , c.`experience` , a.`account_name` " +
+				"FROM `character` c INNER JOIN `account` a ON c.`account_ID` = a.`account_ID`";
 		if(!name.isEmpty() || race!=null || !username.isEmpty()){
 			boolean first = true;
 			query += " WHERE ";
 			if(!name.isEmpty()){
-				query += "`name` LIKE '%"+name+"%'";
+				query += "c.`name` LIKE '%"+name+"%'";
 				if(first) first = false;
 			}
 			if(race!=null){
@@ -243,10 +238,9 @@ public class DataAccess {
 			}
 			if(!username.isEmpty()){
 				if(!first) query += " AND ";
-				query += "`account_account_ID` IN (SELECT `account_ID` FROM `Account` WHERE `account_name`='"+username+"')";
+				query += "`account_account_ID` IN (SELECT `account_ID` FROM `Account` WHERE `account_name` LIKE '%"+username+"%')";
 			}
 		}
-		//TODO FIX THE ACCOUNT ID RETURN
 		List<Character> characters = null;
 		try {
 			ResultSet result = query(query);
@@ -283,25 +277,24 @@ public class DataAccess {
 	 * @return
 	 */
 	public List<Item> searchItem(String name, Item.Rarity rarity, String ability){
-		String query = "SELECT `name`,`damage`,`armor`,`level`,`rarity`,`value`,`model`,`refinement`,`abilityID` FROM `Item`";
+		String query = "SELECT i.`name`,i.`damage`,i.`armor`,i.`level_requirement`,i.`rarity`,i.`value`,i.`model`,a.`name` FROM `items` i INNER JOIN `ability` a ON a.ability_ID=i.ability_ID";
 		if(!name.isEmpty() && rarity!=null && !ability.isEmpty()){
 			boolean first = true;
 			query += " WHERE ";
 			if(!name.isEmpty()){
-				query += "`name`='"+name+"'";
+				query += "i.`name`='"+name+"'";
 				if(first) first = false;
 			}
 			if(rarity!=null){
 				if(first) first = false;
 				else query += " AND ";
-				query += "`rarity`='"+name+"'";
+				query += "i.`rarity`='"+name+"'";
 			}
 			if(!username.isEmpty()){
 				if(!first) query += " AND ";
-				query += "`ability_ID`=(SELECT `ability_ID` FROM `Ability` WHERE `name`='"+ability+"')";
+				query += "`ability_ID`=(SELECT `ability_ID` FROM `Ability` WHERE `name` LIKE '%"+ability+"%')";
 			}
 		}
-		//TODO FIX THE ABILITY ID RETURN
 		List<Item> items = null;
 		try {
 			ResultSet result = query(query);
@@ -338,19 +331,15 @@ public class DataAccess {
 		ResultSet result = null;
 		String query = "SELECT * FROM `skill`";
 		// Add to the query string based on what information is available
-		if(name.isEmpty() && level<0) {
-			query += ";";
-		} else {
+		if(name.isEmpty() && level<0);
+		else {
 			query += " WHERE ";
-		}
-		if(!name.isEmpty()) {
-			query += "`name`='" + name + "'";
-		}
-		if(!name.isEmpty() && !(level<0)) {
-			query += " AND ";
-		}
-		if(!name.isEmpty()) {
-			query += "`level_requirement`='" + level + "'";
+			if(!name.isEmpty())
+				query += "`name`='" + name + "'";
+			if(!name.isEmpty() && !(level<0))
+				query += " AND ";
+			if(!name.isEmpty())
+				query += "`level_requirement`"+value+"'" + level + "'";
 		}
 		// End of query construction
 		query += ";";
@@ -363,11 +352,12 @@ public class DataAccess {
 			while(result.next()) {
 				skillList.add(new Skill(result.getString(2),
 						result.getString(3),
-						result.getInt(4)));
+						Integer.parseInt(result.getString(4))));
 			}
 		} catch (SQLException e) {
 			System.err.println("Error in Skill Search: " + e.getMessage());
 			e.printStackTrace();
+			return null;
 		}
 		// Return the list of found skills
 		return skillList;
@@ -381,8 +371,34 @@ public class DataAccess {
 	 * @return
 	 */
 	public List<Ability> searchAbility(String name, int level, String value){
-		//TODO
-		return null;
+		ResultSet result = null;
+		List<Ability> abilities = new ArrayList<Ability>();
+		String query = "SELECT * FROM `ability`";
+		//1st see if there is anything in either variables
+		if(name.isEmpty() && level<0);
+		else query += " WHERE ";
+		
+		//2nd case is when there are both variables present
+		if(!name.isEmpty() && level>=0)
+			query += "`name` = '" + name + "' AND `level_requirement`"+value + level;
+		else if(!name.isEmpty())
+			query += "`name` = '" + name + "'";
+		else if(level>=0)
+				query += "`level_requirement`"+value+level;
+		//End of query
+		query += ";";
+		try{
+			result = query(query);
+			while(result.next()){
+				abilities.add(new Ability(result.getString(2),
+						result.getString(3),
+						Integer.parseInt(result.getString(4))));
+			}
+		}catch (SQLException e){
+			System.err.println("Error in Ability Search: " + e.getMessage());
+			return null;
+		}
+		return abilities;
 	}
 
 	//ADD
@@ -394,14 +410,20 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean addUser(Account user){
-		boolean added = false;
 		try{
-			added = execute("INSERT INTO `account` (`account_name, `password`, `email`, `first_name`, `last_name`, " +
-					"`ingame_currency`) VALUES ('" + user.getAccountName() + "', '" + user.getPassword() + "', '" +
-					user.getEmail() + "', '" + user.getFirstName() + "', '" + user.getLastName() + "', '" + user.getCurrency() + "');");
+			return execute("INSERT INTO `account` " +
+					"(`account_name`, `password`, `email`, `first_name`, `last_name`, " +
+					"`ingame_currency`) VALUES ('" + 
+					user.getAccountName() + "', '" + 
+					user.getPassword() + "', '" +
+					user.getEmail() + "', '" + 
+					user.getFirstName() + "', '" + 
+					user.getLastName() + "', '" + 
+					user.getCurrency() + "');");
 		}catch(Exception e){
+			System.err.println("Error in adding user: " + e.getMessage());
+			return false;
 		}
-		return added;
 	}
 
 
@@ -447,14 +469,14 @@ public class DataAccess {
 			"(`name`, `damage`, `armor`, " +
 			"`level_requirement`, `rarity`, `value`, `model`, " +
 			"`abilitiy_ability_ID`) VALUES (" +
-		"'"+item.getName()+"', " +
-		"'"+item.getDamage()+"', " +
-		"'"+item.getArmor()+"', " +
-		"'"+item.getLevel()+"', " +
-		"'"+item.getRarity()+"', " +
-		"'"+item.getValue()+"', " +
-		"'"+item.getModel()+"', " +
-		"(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbility().getName()+"'))";
+			"'"+item.getName()+"', " +
+			"'"+item.getDamage()+"', " +
+			"'"+item.getArmor()+"', " +
+			"'"+item.getLevel()+"', " +
+			"'"+item.getRarity()+"', " +
+			"'"+item.getValue()+"', " +
+			"'"+item.getModel()+"', " +
+			"(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbility()+"'))";
 		
 		try {
 			return execute(query);
@@ -492,10 +514,17 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean addAbility(Ability ability){
-		//TODO
-		return false;
+		boolean execute = false;
+		try{
+			execute = execute("INSERT INTO SKILL(name, description, level_requirement) " +
+					"VALUES('" + ability.getName() + "', '" + 
+					ability.getDescription() + "', " + 
+					ability.getLevelRequirement()+ ");");
+		} catch (SQLException e) {
+			System.err.println("Error in Ability Add: " + e.getMessage());
+		}
+		return execute;
 	}
-
 
 	//EDIT
 	/**
@@ -568,7 +597,7 @@ public class DataAccess {
 			"', `rarity`='" +item.getRarity()+
 			"', `value`='" +item.getValue()+
 			"', `model`='" +item.getModel()+
-			"', `abilitiy_ability_ID`='(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbility().getName()+"')"+
+			"', `abilitiy_ability_ID`='(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbility()+"')"+
 			"' WHERE `name`='" +name+"'";
 		try {
 			return execute(query);

@@ -36,8 +36,7 @@ public class DisplayPanel {
 		return displayPanel;
 	}
 	
-	//TODO I WILL HAVE THIS EDITABLE TOMORROW AS WELL AS
-	//TODO HAVING DATA ENTERED INTO THE FIELDS.
+	//TODO REDO THIS CALLING THE LOWER METHODS WITH NULLS OR BLANKS
 	public static void setDisplayPanel(GUI.ObjectType type){
 		switch (type) {
 			case ACCOUNT:
@@ -686,7 +685,7 @@ public class DisplayPanel {
 			topPanel.add(panel);
 			panel = new JPanel(new GridLayout(1,2));
 			panel.add(new JLabel("  Ingame Currency"));
-			field = new JTextField(Integer.toString(account.getCurrency()));
+			field = new JTextField(""+account.getCurrency());
 			field.setEditable(false);
 			panel.add(field);
 			topPanel.add(panel);
@@ -810,6 +809,7 @@ public class DisplayPanel {
 			//add panels to display
 			displayPanel.add(topPanel);
 			displayPanel.add(bottomPanel);
+			GUI.getGUI().updateMainPanel();
 	}
 	
 	
@@ -896,7 +896,7 @@ public class DisplayPanel {
 		//account
 		subPanel = new JPanel(new GridLayout(1,3));
 		subPanel.add(new JLabel("  Account"));
-		field = new JTextField(Character.getParent(character.getName()).getAccountName());
+		field = new JTextField(character.getAccountUsername());
 		field.setEditable(false);
 		subPanel.add(field);
 		JButton displayAccount = new JButton("Display Account");
@@ -969,6 +969,7 @@ public class DisplayPanel {
 		
 		displayPanel.add(topPanel);
 		displayPanel.add(bottomPanel);
+		GUI.getGUI().updateMainPanel();
 	}
 	
 	protected static void setDisplayPanel(Item item){
@@ -1048,7 +1049,7 @@ public class DisplayPanel {
 		
 		subPanel = new JPanel(new GridLayout(1,3));
 		subPanel.add(new JLabel("  Ability"));
-		field = new JTextField(item.getAbility().getName());
+		field = new JTextField(item.getAbility());
 		field.setEditable(false);
 		subPanel.add(field);
 		JButton displayAbility = new JButton("Display Ability");
@@ -1143,6 +1144,7 @@ public class DisplayPanel {
 		
 		displayPanel.add(topPanel);
 		displayPanel.add(bottomPanel);
+		GUI.getGUI().updateMainPanel();
 	}
 	
 	protected static void setDisplayPanel(Skill skill){
@@ -1162,7 +1164,7 @@ public class DisplayPanel {
 		panel.add(temp);
 		temp = new JPanel(new GridLayout(1,2));
 		temp.add(new JLabel("  Level Requirement"));
-		field = new JTextField(skill.getLevelRequirement());
+		field = new JTextField(""+skill.getLevelRequirement());
 		field.setEditable(false);
 		temp.add(field);
 		panel.add(temp);
@@ -1234,6 +1236,7 @@ public class DisplayPanel {
 		
 		displayPanel.add(topPanel);
 		displayPanel.add(bottomPanel);
+		GUI.getGUI().updateMainPanel();
 	}
 	
 	protected static void setDisplayPanel(Ability ability){
@@ -1253,7 +1256,7 @@ public class DisplayPanel {
 		panel.add(temp);
 		temp = new JPanel(new GridLayout(1,2));
 		temp.add(new JLabel("  Level Requirement"));
-		field = new JTextField(ability.getLevelRequirement());
+		field = new JTextField(""+ability.getLevelRequirement());
 		field.setEditable(false);
 		temp.add(field);
 		panel.add(temp);
@@ -1264,6 +1267,7 @@ public class DisplayPanel {
 		label = new JLabel("Description");
 		temp.add(label);
 		panel.add(temp, BorderLayout.NORTH);
+		//TODO CHANGE ALL TO TEXT AREAS
 		field = new JTextField(ability.getDescription());
 		field.setEditable(false);
 		panel.add(field, BorderLayout.CENTER);
@@ -1324,5 +1328,6 @@ public class DisplayPanel {
 		
 		displayPanel.add(topPanel);
 		displayPanel.add(bottomPanel);
+		GUI.getGUI().updateMainPanel();
 	}
 }

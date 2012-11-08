@@ -1021,12 +1021,16 @@ public class DisplayPanel {
 		//TODO edit.addActionListener()
 		subPanel.add(edit);
 		JButton delete = new JButton("DELETE");
-		try{
-			DataAccess.getInstance().deleteUser(thisCharacter.getName());
-			DisplayPanel.setDisplayPanel(GUI.ObjectType.CHARACTER);
-			//ResultsPanel.setResultsPanel(); //TODO
-			GUI.getGUI().updateMainPanel();
-		}catch(Exception e){}
+		delete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
 		subPanel.add(delete);
 		panel.add(subPanel);
 

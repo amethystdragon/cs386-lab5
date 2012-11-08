@@ -619,7 +619,7 @@ public class DataAccess {
 	public boolean editSkill(String name, Skill skill){
 		boolean execute = false;
 		try{
-			execute = execute("UPDATE SKILL SET `name`='" + skill.getName()+
+			execute = execute("UPDATE skill SET `name`='" + skill.getName()+
 					"', `description`='" + skill.getDescription() +
 					"', `level_requirement`='" + skill.getLevelRequirement() +
 					"' WHERE `name`='" + name + "';");
@@ -694,12 +694,14 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean deleteItem(String name){
+		boolean execute = false;
 		try {
-			return execute("DELETE FROM `items` WHERE `name`='"+name+"'");
+			execute = execute("DELETE FROM `items` WHERE `name`='"+name+"'");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
+		return execute;
 	}
 
 	/**
@@ -711,9 +713,8 @@ public class DataAccess {
 	public boolean deleteSkill(String name) {
 		boolean execute = false;
 		try{
-			execute = execute("DELETE FROM `skills` WHERE `name`='" + name + "';");
+			execute = execute("DELETE FROM `skill` WHERE `name`='" + name + "';");
 		} catch (SQLException e) {
-			System.err.println("Error in Skill Delete By Name: " + e.getMessage());
 			e.printStackTrace();
 		}
 		return execute;
@@ -726,7 +727,22 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean deleteAbility(String name){
-		//TODO
-		return false;
+		if(name.equalsIgnoreCase("NONE")){
+			return false;
+		}
+		boolean execute = false;
+		try{
+			List<Item> itemlist = this.searchItem("", null, "");
+			for(Item item : itemlist){
+				if(item.getAbility() == name){
+					execute("UPDATE item SET `ability_ID`= 0 WHERE `name` = '" + item.getName() + "';");
+				}
+			}
+			execute("DELETE FROM `ability` WHERE `name`='" + name + "';");
+			execute = true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return execute;
 	}
 }

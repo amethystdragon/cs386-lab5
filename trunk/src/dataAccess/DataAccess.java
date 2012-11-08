@@ -592,15 +592,15 @@ public class DataAccess {
 	 */
 	public boolean editItem(String name, Item item){//TODO 
 		String query = "UPDATE `items` SET " +
-			"`name`='" +item.getName()+
-			"', `damage`='" +item.getDamage()+
-			"', `armor`='" +item.getArmor()+
-			"', `level_requirement`='" +item.getLevel()+
-			"', `rarity`='" +item.getRarity()+
-			"', `value`='" +item.getValue()+
-			"', `model`='" +item.getModel()+
-			"', `abilitiy_ability_ID`='(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbility()+"')"+
-			"' WHERE `name`='" +name+"'";
+			"`name`= '" +item.getName()+
+			"', `damage`= " +item.getDamage()+
+			", `armor`= " +item.getArmor()+
+			", `level_requirement`= " +item.getLevel()+
+			", `rarity` ='" +item.getRarity()+
+			"', `value` =" +item.getValue()+
+			", `model`='" +item.getModel()+
+			"', `ability_ID`= (SELECT `ability_ID` FROM `ability` WHERE `name`='"+item.getAbility()+"')"+
+			" WHERE `name` = '" +name+"'";
 		try {
 			return execute(query);
 		} catch (SQLException e) {
@@ -709,7 +709,7 @@ public class DataAccess {
 	 * @param item
 	 * @return
 	 */
-	public boolean deleteItem(String name){
+	public boolean deleteItem(String name){//TODO
 		boolean execute = false;
 		try {
 			execute = execute("DELETE FROM `items` WHERE `name`='"+name+"'");

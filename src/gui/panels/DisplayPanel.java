@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -507,9 +508,13 @@ public class DisplayPanel {
 						JTextField valueField = new JTextField(30);
 						JTextField modelField = new JTextField(30);
 						
-						//TODO ability?
+						JComboBox<String> abilityBox = new JComboBox<String>();
+						List<Ability> abillist = DataAccess.getInstance().searchAbility("", -1, "");
+						for(Ability ability : abillist){
+							abilityBox.addItem(ability.getName());
+						}
 						
-						JPanel myPanel = new JPanel(new GridLayout(7,2));
+						JPanel myPanel = new JPanel(new GridLayout(8,2));
 						myPanel.add(new JLabel("Item Name:"));
 						myPanel.add(itemNameField);
 						myPanel.add(new JLabel("Damage:"));
@@ -524,15 +529,21 @@ public class DisplayPanel {
 						myPanel.add(valueField);
 						myPanel.add(new JLabel("Model:"));
 						myPanel.add(modelField);
+						myPanel.add(new JLabel("Ability"));
+						myPanel.add(abilityBox);
 
 						int result = JOptionPane.showConfirmDialog(null, myPanel, 
 								"Please Enter Item to Create", JOptionPane.OK_CANCEL_OPTION);
-						if (result == JOptionPane.OK_OPTION) {
+						if (result == JOptionPane.OK_OPTION && !itemNameField.getText().isEmpty() &&
+								!damageField.getText().isEmpty() && !armorField.getText().isEmpty() &&
+								!levelReqField.getText().isEmpty() && rarityBox.getSelectedItem() != null
+								&& !valueField.getText().isEmpty() && !modelField.getText().isEmpty() &&
+								abilityBox.getSelectedItem() != null) {
 							Item addItem = new Item(
 									itemNameField.getText(), Integer.parseInt(damageField.getText()),
 									Integer.parseInt(armorField.getText()), Integer.parseInt(levelReqField.getText()),
 									Item.Rarity.class.cast(rarityBox.getSelectedItem()), Integer.parseInt(valueField.getText()),
-									modelField.getText(), null);
+									modelField.getText(), abilityBox.getSelectedItem().toString());
 							if(DataAccess.getInstance().addItem(addItem)){
 								DisplayPanel.setDisplayPanel(addItem);
 								ResultsPanel.setResultsPanel(DataAccess.getInstance().searchItem("", null, ""));
@@ -540,6 +551,9 @@ public class DisplayPanel {
 							else{
 								JOptionPane.showMessageDialog(null, "ERROR: Item not created!");
 							}
+						}
+						else{
+							JOptionPane.showMessageDialog(null, "ERROR: Item not created!");
 						}
 						GUI.getGUI().updateMainPanel();
 					}catch(Exception e){

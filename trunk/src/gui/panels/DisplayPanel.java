@@ -13,16 +13,20 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import dataAccess.DataAccess;
@@ -941,7 +945,6 @@ public class DisplayPanel {
 
 
 	protected static void setDisplayPanel(Character character){
-		final Character thisCharacter = character;
 		JPanel topPanel = new JPanel(new BorderLayout());
 		topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
@@ -1102,8 +1105,7 @@ public class DisplayPanel {
 		GUI.getGUI().updateMainPanel();
 	}
 
-	protected static void setDisplayPanel(Item item){
-		final Item thisItem = item;
+	protected static void setDisplayPanel(final Item item){
 		displayPanel = new JPanel(new GridLayout(2,1));
 		JPanel topPanel = new JPanel(new BorderLayout());
 		topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -1187,8 +1189,8 @@ public class DisplayPanel {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				try{
-					if(Ability.findAbility(thisItem.getAbility()) != null){
-						DisplayPanel.setDisplayPanel(Ability.findAbility(thisItem.getAbility()));
+					if(Ability.findAbility(item.getAbility()) != null){
+						DisplayPanel.setDisplayPanel(Ability.findAbility(item.getAbility()));
 						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchAbility("", -1, ""));
 						GUI.getGUI().updateMainPanel();
 					}
@@ -1280,7 +1282,7 @@ public class DisplayPanel {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				try{
-					DataAccess.getInstance().deleteItem(thisItem.getName());
+					DataAccess.getInstance().deleteItem(item.getName());
 					DisplayPanel.setDisplayPanel(GUI.ObjectType.ITEM);
 					//ResultsPanel.setResultsPanel(); //TODO
 					GUI.getGUI().updateMainPanel();
@@ -1471,7 +1473,7 @@ public class DisplayPanel {
 		subPanel.add(createAbility);
 		//Adds the edit ability button
 		JButton edit = new JButton("EDIT ABILITY");
-		createAbility.addActionListener(new ActionListener() {
+		edit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				try{
@@ -1492,7 +1494,7 @@ public class DisplayPanel {
 					myPanel.add(levelReqField);
 
 					int result = JOptionPane.showConfirmDialog(null, myPanel, 
-							"Please Enter Ability to Create", JOptionPane.OK_CANCEL_OPTION);
+							"Edit Ability: "+ability.getName(), JOptionPane.OK_CANCEL_OPTION);
 					if (result == JOptionPane.OK_OPTION) {
 						Ability addAbility = new Ability(
 								abilityNameField.getText(), abilityDescriptionField.getText(),
@@ -1507,8 +1509,19 @@ public class DisplayPanel {
 		});
 		subPanel.add(edit);
 		//Adds the delete ability button
-		JButton delete = new JButton("DELETE ABILITY"); //TODO
-		//TODO add.addActionListener()
+		JButton delete = new JButton("DELETE ABILITY");
+		delete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					DataAccess.getInstance().deleteAbility(ability.getName());
+					DisplayPanel.setDisplayPanel(GUI.ObjectType.ITEM);
+					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchAbility("", -1, ""));
+					GUI.getGUI().updateMainPanel();
+				}catch(Exception e){e.printStackTrace();}
+			}
+		});
+		
 		subPanel.add(delete);
 		panel.add(subPanel, BorderLayout.SOUTH);
 		topPanel.add(panel);
@@ -1519,8 +1532,15 @@ public class DisplayPanel {
 		panel = new JPanel();
 		panel.add(new JLabel("ITEMS WITH THIS ABILITY"));
 		bottomPanel.add(panel, BorderLayout.NORTH);
-		bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
-		//TODO items with ability
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		try {
+			for(Item i : DataAccess.getInstance().searchItem("", null, ability.getName()))
+				listModel.addElement((i.getName()));
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		bottomPanel.add(new JScrollPane(new JList<String>(listModel)), BorderLayout.CENTER);
+		
 		JButton displayCharacter = new JButton("Display Item"); 
 		//TODO display item
 		bottomPanel.add(displayCharacter,BorderLayout.SOUTH);

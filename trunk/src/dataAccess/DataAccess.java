@@ -308,7 +308,7 @@ public class DataAccess {
 						Rarity.valueOf(result.getString(5)), 
 						Integer.parseInt(result.getString(6)), 
 						result.getString(7), 
-						null));
+						result.getString(8)));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -468,7 +468,7 @@ public class DataAccess {
 		String query = "INSERT INTO `items` " +
 			"(`name`, `damage`, `armor`, " +
 			"`level_requirement`, `rarity`, `value`, `model`, " +
-			"`abilitiy_ability_ID`) VALUES (" +
+			"`ability_ID`) VALUES (" +
 			"'"+item.getName()+"', " +
 			"'"+item.getDamage()+"', " +
 			"'"+item.getArmor()+"', " +
@@ -476,8 +476,8 @@ public class DataAccess {
 			"'"+item.getRarity()+"', " +
 			"'"+item.getValue()+"', " +
 			"'"+item.getModel()+"', " +
-			"(SELECT `ability_ID` FROM `account` WHERE `name`='"+
-				((item.getAbility()==null)?"0":item.getAbility())
+			"(SELECT `ability_ID` FROM `ability` WHERE `name`='"+
+				((item.getAbility()==null)?"None":item.getAbility())
 				+"'))";
 		
 		try {
@@ -560,7 +560,7 @@ public class DataAccess {
 	 * @param Character
 	 * @return
 	 */
-	public boolean editCharacter(String name, Character character){
+	public boolean editCharacter(String name, Character character){//TODO TEST!
 		String query = "UPDATE `character` SET " +
 		"`name`='"+character.getName()+
 		"', `race`='"+character.getRace()+
@@ -590,7 +590,7 @@ public class DataAccess {
 	 * @param item
 	 * @return
 	 */
-	public boolean editItem(String name, Item item){
+	public boolean editItem(String name, Item item){//TODO 
 		String query = "UPDATE `items` SET " +
 			"`name`='" +item.getName()+
 			"', `damage`='" +item.getDamage()+
@@ -618,7 +618,7 @@ public class DataAccess {
 	 * @param level
 	 * @return true if successful
 	 */
-	public boolean editSkill(String name, Skill skill){
+	public boolean editSkill(String name, Skill skill){//TODO TEST!
 		boolean execute = false;
 		try{
 			execute = execute("UPDATE `skill` SET `name`='" + skill.getName()+
@@ -661,22 +661,23 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean deleteUser(String username){
-		boolean deleted = false;
-		//Account user = Account.findAccount(username);
-		//if (user != null){
-			try{
-				//for(Character character : DataAccess.getInstance().searchCharacter("", null, username)){
-					//TODO delete from character hasitem reference table?
-				//	DataAccess.getInstance().deleteCharacter(character.getName());
-				//}
-				execute("DELETE FROM `account` WHERE `account_name` = '" + username + "'");
-				deleted = true;
-			}catch(Exception e){
-				e.printStackTrace();
-				return false;
+		boolean done = true;
+		try{
+			//Checks to see if the user has characters still
+			ResultSet rs  = query("SELECT * FROM `account` WHERE `account_name`='"+username+"'");
+			rs.next();
+			rs = query("SELECT COUNT(`name`) FROM `character` WHERE `account_ID`="+rs.getString(1));
+			rs.next();
+			//IF so the account will not be deleted
+			if(Integer.parseInt(rs.getString(1))>0){
+				done &= execute("DELETE FROM `character` WHERE `account_ID` IN (SELECT `account_ID` FROM `account` WHERE `account_name`='"+username+"')");
 			}
-		//}
-		return deleted;
+			done &= execute("DELETE FROM `account` WHERE `account_name` = '" + username + "'");
+		}catch(Exception e){
+			e.printStackTrace();
+			done = false;
+		}
+		return done;
 	}
 
 
@@ -686,7 +687,7 @@ public class DataAccess {
 	 * @param Character
 	 * @return
 	 */
-	public boolean deleteCharacter(String name){
+	public boolean deleteCharacter(String name){//TODO TEST!
 		boolean execute = true;
 		try {
 			ResultSet rs = query("SELECT * FROM `character` WHERE `name`='"+name+"'");
@@ -725,7 +726,7 @@ public class DataAccess {
 	 * @param name
 	 * @return true if successful
 	 */
-	public boolean deleteSkill(String name) {
+	public boolean deleteSkill(String name) {//TODO TEST!
 		if(name.equalsIgnoreCase("none")) return false;
 		boolean execute = false;
 		try{

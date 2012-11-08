@@ -150,7 +150,7 @@ public class SearchPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchItem(iName.getText(), Rarity.getRRarity(rarity.getText()), iability.getText()));
+						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchItem(iName.getText(), Rarity.getRarity(rarity.getText()), iability.getText()));
 						GUI.getGUI().updateMainPanel();
 					} catch (ClassNotFoundException | SQLException e1) {
 						e1.printStackTrace();

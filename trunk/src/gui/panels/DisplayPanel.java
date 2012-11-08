@@ -1275,7 +1275,83 @@ public class DisplayPanel {
 		});
 		subPanel.add(createItem);
 		JButton edit = new JButton("EDIT ITEM");
-		//TODO edit.addActionListener()
+		edit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					JTextField itemNameField = new JTextField(30);
+					itemNameField.setText(item.getName());
+					itemNameField.setEditable(false);
+					JTextField damageField = new JTextField(30);
+					damageField.setText(Integer.toString(item.getDamage()));
+					JTextField armorField = new JTextField(30);
+					armorField.setText(Integer.toString(item.getArmor()));
+					JTextField levelReqField = new JTextField(30);
+					levelReqField.setText(Integer.toString(item.getLevel()));
+					JComboBox<Item.Rarity> rarityBox = new JComboBox<Item.Rarity>();
+					for(Item.Rarity rarity: Item.Rarity.values()){
+						rarityBox.addItem(rarity);
+					}
+					rarityBox.setSelectedItem(item.getRarity());
+					JTextField valueField = new JTextField(30);
+					valueField.setText(Integer.toString(item.getValue()));
+					JTextField modelField = new JTextField(30);
+					modelField.setText(item.getModel());
+					
+					JComboBox<String> abilityBox = new JComboBox<String>();
+					List<Ability> abillist = DataAccess.getInstance().searchAbility("", -1, "");
+					for(Ability ability : abillist){
+						abilityBox.addItem(ability.getName());
+					}
+					abilityBox.setSelectedItem(Ability.findAbility(item.getAbility()));
+					
+					JPanel myPanel = new JPanel(new GridLayout(8,2));
+					myPanel.add(new JLabel("Item Name:"));
+					myPanel.add(itemNameField);
+					myPanel.add(new JLabel("Damage:"));
+					myPanel.add(damageField);
+					myPanel.add(new JLabel("Armor:"));
+					myPanel.add(armorField);
+					myPanel.add(new JLabel("Level Requirement:"));
+					myPanel.add(levelReqField);
+					myPanel.add(new JLabel("Rarity:"));
+					myPanel.add(rarityBox);
+					myPanel.add(new JLabel("Value:"));
+					myPanel.add(valueField);
+					myPanel.add(new JLabel("Model:"));
+					myPanel.add(modelField);
+					myPanel.add(new JLabel("Ability"));
+					myPanel.add(abilityBox);
+
+					int result = JOptionPane.showConfirmDialog(null, myPanel, 
+							"Please Enter Item to Create", JOptionPane.OK_CANCEL_OPTION);
+					if (result == JOptionPane.OK_OPTION && !itemNameField.getText().isEmpty() &&
+							!damageField.getText().isEmpty() && !armorField.getText().isEmpty() &&
+							!levelReqField.getText().isEmpty() && rarityBox.getSelectedItem() != null
+							&& !valueField.getText().isEmpty() && !modelField.getText().isEmpty() &&
+							abilityBox.getSelectedItem() != null) {
+						Item editItem = new Item(
+								itemNameField.getText(), Integer.parseInt(damageField.getText()),
+								Integer.parseInt(armorField.getText()), Integer.parseInt(levelReqField.getText()),
+								Item.Rarity.class.cast(rarityBox.getSelectedItem()), Integer.parseInt(valueField.getText()),
+								modelField.getText(), abilityBox.getSelectedItem().toString());
+						if(DataAccess.getInstance().editItem(editItem.getName(), editItem)){
+							DisplayPanel.setDisplayPanel(editItem);
+							ResultsPanel.setResultsPanel(DataAccess.getInstance().searchItem("", null, ""));
+						}
+						else{
+							JOptionPane.showMessageDialog(null, "ERROR: Item not created!");
+						}
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "ERROR: Item not created!");
+					}
+					GUI.getGUI().updateMainPanel();
+				}catch(Exception e){
+					JOptionPane.showMessageDialog(null, "ERROR: Item not created!");
+				}
+			}
+		});
 		subPanel.add(edit);
 		JButton delete = new JButton("DELETE ITEM");
 		delete.addActionListener(new ActionListener() {

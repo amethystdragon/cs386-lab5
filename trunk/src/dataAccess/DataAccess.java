@@ -292,7 +292,7 @@ public class DataAccess {
 			}
 			if(!username.isEmpty()){
 				if(!first) query += " AND ";
-				query += "`ability_ID`=(SELECT `ability_ID` FROM `Ability` WHERE `name` LIKE '%"+ability+"%')";
+				query += "`ability_ID`=(SELECT `ability_ID` FROM `ability` WHERE `name` LIKE '%"+ability+"%')";
 			}
 		}
 		List<Item> items = null;

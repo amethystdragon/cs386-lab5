@@ -352,6 +352,38 @@ public class DataAccess {
 		return items;
 	}
 
+	//Character has item
+	/**
+	 * @param name
+	 * @return
+	 */
+	public List<Item> searchItem(Character name){
+		String query = "SELECT i.`name`,i.`damage`,i.`armor`,i.`level_requirement`,i.`rarity`,i.`value`,i.`model`,a.`name` " +
+				"FROM `items` i INNER JOIN `ability` a ON a.`ability_ID`=i.`ability_ID` " +
+				"WHERE `item_ID`=(SELECT `items_item_ID` FROM `character_has_items` WHERE `character_character_ID`=" +
+				"(SELECT `character_ID` FROM `character` WHERE `name`='"+name+"'));";
+		List<Item> items = null;
+		try {
+			ResultSet result = query(query);
+			items = new ArrayList<Item>();
+			while(result.next()){
+				items.add(new Item(
+						result.getString(1), 
+						Integer.parseInt(result.getString(2)), 
+						Integer.parseInt(result.getString(3)),
+						Integer.parseInt(result.getString(4)),
+						Rarity.getRarity(result.getString(5)), 
+						Integer.parseInt(result.getString(6)), 
+						result.getString(7), 
+						result.getString(8)));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return items;
+	}
+
 	/**
 	 * @author Joe
 	 * Search for a skill which matches the given criteria
@@ -398,6 +430,37 @@ public class DataAccess {
 		return skillList;
 	}
 
+
+	//Character has skill
+	/**
+	 * @param character
+	 * @return
+	 */
+	public List<Skill> searchSkill(String character){
+		List<Skill> skillList = null;
+		ResultSet result = null;
+		String query = "SELECT `name`,`description`,`level_requirement` FROM `skill` WHERE skill_ID=" +
+				"(SELECT `skill_skill_ID` FROM `character_has_skill` WHERE `character_character_ID`=" +
+				"(SELECT `character_ID` FROM `character` WHERE `name`='Sue'))";
+
+		// Create a list of the returned skills from the query
+		try {
+			result = query(query);
+			skillList = new ArrayList<Skill>();
+			// While there is a next entry, create the skills and add skills to the list
+			while(result.next()) {
+				skillList.add(new Skill(result.getString(2),
+						result.getString(3),
+						Integer.parseInt(result.getString(4))));
+			}
+		} catch (SQLException e) {
+			System.err.println("Error in Skill Search: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		// Return the list of found skills
+		return skillList;
+	}
 
 	/**
 	 * @author Malcolm
@@ -814,17 +877,6 @@ public class DataAccess {
 			e.printStackTrace();
 		}
 		return execute;
-	}
-	
-	//Character has item
-	public List<Item> searchItem(Character character){
-	
-		return null;
-	}
-	//Character has skill
-	public List<Skill> searchSkill(Character character){
-		
-		return null;
 	}
 	
 	public boolean addItemToCharacter(String item, String name){

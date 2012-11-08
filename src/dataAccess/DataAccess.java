@@ -881,9 +881,9 @@ public class DataAccess {
 	
 	public boolean addItemToCharacter(String item, String name){
 		try {
-			return execute("INSERT INTO `character_has_itemsl` (`character_character_ID`, `items_item_ID`) VALUES " +
-					"((SELECT character_ID FROM item WHERE `name`='"+name+"')," +
-					"(SELECT item_ID FROM skill WHERE `name`='"+item+"')),");
+			return execute("INSERT INTO `character_has_items` (`character_character_ID`, `items_item_ID`) VALUES " +
+					"((SELECT `character_ID` FROM `character` WHERE `name`='"+name+"')," +
+					"(SELECT `item_ID` FROM `items` WHERE `name`='"+item+"')),");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

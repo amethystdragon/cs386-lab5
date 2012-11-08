@@ -828,12 +828,24 @@ public class DataAccess {
 	}
 	
 	public boolean addItemToCharacter(String item, String name){
-		
-		return false;
+		try {
+			return execute("INSERT INTO `character_has_itemsl` (`character_character_ID`, `items_item_ID`) VALUES " +
+					"((SELECT character_ID FROM item WHERE `name`='"+name+"')," +
+					"(SELECT item_ID FROM skill WHERE `name`='"+item+"')),");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public boolean addSkillToCharacter(String skill, String name){
-		
-		return false;
+		try {
+			return execute("INSERT INTO `character_has_skill` (`character_character_ID`, `items_item_ID`) VALUES " +
+					"((SELECT character_ID FROM character WHERE `name`='"+name+"')," +
+					"(SELECT skill_ID FROM skill WHERE `name`='"+skill+"')),");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

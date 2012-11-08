@@ -498,7 +498,7 @@ public class DataAccess {
 	public boolean addSkill(Skill skill) {
 		boolean execute = false;
 		try{
-			execute = execute("INSERT INTO SKILL(name, description, level_requirement) " +
+			execute = execute("INSERT INTO `skill` (`name`, `description`, `level_requirement`) " +
 					"VALUES('" + skill.getName() + "', '" + skill.getDescription() + "', " + skill.getLevelRequirement()+ ");");
 		} catch (SQLException e) {
 			System.err.println("Error in Skill Add: " + e.getMessage());
@@ -516,7 +516,7 @@ public class DataAccess {
 	public boolean addAbility(Ability ability){
 		boolean execute = false;
 		try{
-			execute = execute("INSERT INTO SKILL(name, description, level_requirement) " +
+			execute = execute("INSERT INTO `ability` (`name`, `description`, `level_requirement`) " +
 					"VALUES('" + ability.getName() + "', '" + 
 					ability.getDescription() + "', " + 
 					ability.getLevelRequirement()+ ");");

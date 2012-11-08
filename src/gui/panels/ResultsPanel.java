@@ -30,11 +30,6 @@ public class ResultsPanel {
 		return resultsPanel;
 	}
 	
-	public static void setResultsPanel(){
-		resultsPanel = new JPanel();
-		resultsPanel.add(new JLabel("TEST"));
-	}
-	
 	/**
 	 * Sets the result panel to contain the searched values
 	 * 

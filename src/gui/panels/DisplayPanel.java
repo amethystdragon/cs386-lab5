@@ -715,7 +715,7 @@ public class DisplayPanel {
 		topPanel.add(panel);
 		panel = new JPanel(new GridLayout(1,2));
 		panel.add(new JLabel("  Ingame Currency"));
-		field = new JTextField(""+account.getCurrency());
+		field = new JTextField(""+((account.getCurrency()<0)?"":account.getCurrency()));
 		field.setEditable(false);
 		panel.add(field);
 		topPanel.add(panel);
@@ -973,33 +973,33 @@ public class DisplayPanel {
 		//attributes
 		subPanel = new JPanel(new GridLayout(1,4));
 		subPanel.add(new JLabel("  STR"));
-		field = new JTextField(character.getStrength());
+		field = new JTextField(""+character.getStrength());
 		field.setEditable(false);
 		subPanel.add(field);
 		subPanel.add(new JLabel("  CON"));
-		field = new JTextField(character.getConstitution());
+		field = new JTextField(""+character.getConstitution());
 		field.setEditable(false);
 		subPanel.add(field);
 		panel.add(subPanel);
 
 		subPanel = new JPanel(new GridLayout(1,4));
 		subPanel.add(new JLabel("  AGI"));
-		field = new JTextField(character.getAgility());
+		field = new JTextField(""+character.getAgility());
 		field.setEditable(false);
 		subPanel.add(field);
 		subPanel.add(new JLabel("  DEX"));
-		field = new JTextField(character.getDexterity());
+		field = new JTextField(""+character.getDexterity());
 		field.setEditable(false);
 		subPanel.add(field);
 		panel.add(subPanel);
 
 		subPanel = new JPanel(new GridLayout(1,4));
 		subPanel.add(new JLabel("  INT"));
-		field = new JTextField(character.getIntelligence());
+		field = new JTextField(""+character.getIntelligence());
 		field.setEditable(false);
 		subPanel.add(field);
 		subPanel.add(new JLabel("  WIS"));
-		field = new JTextField(character.getWisdom());
+		field = new JTextField(""+character.getWisdom());
 		field.setEditable(false);
 		subPanel.add(field);
 		panel.add(subPanel);
@@ -1355,7 +1355,7 @@ public class DisplayPanel {
 		GUI.getGUI().updateMainPanel();
 	}
 
-	protected static void setDisplayPanel(Ability ability){
+	protected static void setDisplayPanel(final Ability ability){
 		displayPanel = new JPanel(new GridLayout(2,1));
 		JPanel topPanel = new JPanel(new GridLayout(2,1));
 		topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -1421,9 +1421,44 @@ public class DisplayPanel {
 			}
 		});
 		subPanel.add(createAbility);
-		JButton edit = new JButton("EDIT ABILITY"); //TODO
-		//TODO edit.addActionListener()
+		//Adds the edit ability button
+		JButton edit = new JButton("EDIT ABILITY");
+		createAbility.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					JTextField abilityNameField = new JTextField(30);
+					abilityNameField.setEditable(false);
+					abilityNameField.setText(ability.getName());
+					JTextField abilityDescriptionField = new JTextField(45);
+					abilityDescriptionField.setText(ability.getDescription());
+					JTextField levelReqField = new JTextField(30);
+					levelReqField.setText(ability.getLevelRequirement()+"");
+
+					JPanel myPanel = new JPanel(new GridLayout(3,2));
+					myPanel.add(new JLabel("Ability Name:"));
+					myPanel.add(abilityNameField);
+					myPanel.add(new JLabel("Description:"));
+					myPanel.add(abilityDescriptionField);
+					myPanel.add(new JLabel("Level Requirement:"));
+					myPanel.add(levelReqField);
+
+					int result = JOptionPane.showConfirmDialog(null, myPanel, 
+							"Please Enter Ability to Create", JOptionPane.OK_CANCEL_OPTION);
+					if (result == JOptionPane.OK_OPTION) {
+						Ability addAbility = new Ability(
+								abilityNameField.getText(), abilityDescriptionField.getText(),
+								Integer.parseInt(levelReqField.getText()));
+						if(DataAccess.getInstance().editAbility(ability.getName(),addAbility)){
+							DisplayPanel.setDisplayPanel(addAbility);
+						}
+					}
+					GUI.getGUI().updateMainPanel();
+				}catch(Exception e){}
+			}
+		});
 		subPanel.add(edit);
+		//Adds the delete ability button
 		JButton delete = new JButton("DELETE ABILITY"); //TODO
 		//TODO add.addActionListener()
 		subPanel.add(delete);

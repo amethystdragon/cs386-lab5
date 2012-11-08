@@ -133,7 +133,11 @@ public class Account {
 	 */
 	public static Account findAccount(String accountName){
 		Account account = null;
-		//TODO sql command to find account by name
+		try{
+			account = DataAccess.getInstance().searchUser(accountName, "", "", "").get(0);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		return account;
 	}
 	

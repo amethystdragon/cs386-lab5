@@ -1,6 +1,7 @@
 package gui.panels;
 
 import gui.GUI;
+import gui.GUI.ObjectType;
 import helpers.Ability;
 import helpers.Account;
 import helpers.Character;
@@ -119,7 +120,9 @@ public class DisplayPanel {
 
 						int result = JOptionPane.showConfirmDialog(null, myPanel, 
 								"Please Enter Account to Create", JOptionPane.OK_CANCEL_OPTION);
-						if (result == JOptionPane.OK_OPTION) {
+						if (result == JOptionPane.OK_OPTION && !userNameField.getText().isEmpty() && !passwordField.getText().isEmpty() &&
+								!emailField.getText().isEmpty() && !fNameField.getText().isEmpty() &&
+								!lNameField.getText().isEmpty() && !currencyField.getText().isEmpty()) {
 							Account addAccount = new Account(
 									userNameField.getText(), passwordField.getText(),
 									emailField.getText(), fNameField.getText(),
@@ -131,6 +134,9 @@ public class DisplayPanel {
 							else{
 								JOptionPane.showMessageDialog(null, "ERROR: Account not added!");
 							}
+						}
+						else{
+							JOptionPane.showMessageDialog(null, "ERROR: Account not added!");
 						}
 						GUI.getGUI().updateMainPanel();
 					}catch(Exception e){
@@ -744,7 +750,9 @@ public class DisplayPanel {
 
 					int result = JOptionPane.showConfirmDialog(null, myPanel, 
 							"Please Enter Account to Create", JOptionPane.OK_CANCEL_OPTION);
-					if (result == JOptionPane.OK_OPTION) {
+					if (result == JOptionPane.OK_OPTION  && !userNameField.getText().isEmpty() && !passwordField.getText().isEmpty() &&
+							!emailField.getText().isEmpty() && !fNameField.getText().isEmpty() &&
+							!lNameField.getText().isEmpty() && !currencyField.getText().isEmpty()) {
 						Account addAccount = new Account(
 								userNameField.getText(), passwordField.getText(),
 								emailField.getText(), fNameField.getText(),
@@ -756,6 +764,9 @@ public class DisplayPanel {
 						else{
 							JOptionPane.showMessageDialog(null, "ERROR: Account not created!");
 						}
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "ERROR: Account not created!");
 					}
 					GUI.getGUI().updateMainPanel();
 				}catch(Exception e){
@@ -799,7 +810,9 @@ public class DisplayPanel {
 
 					int result = JOptionPane.showConfirmDialog(null, myPanel, 
 							"Please Enter Account Information to Edit", JOptionPane.OK_CANCEL_OPTION);
-					if (result == JOptionPane.OK_OPTION) {
+					if (result == JOptionPane.OK_OPTION  && !userNameField.getText().isEmpty() && !passwordField.getText().isEmpty() &&
+							!emailField.getText().isEmpty() && !fNameField.getText().isEmpty() &&
+							!lNameField.getText().isEmpty() && !currencyField.getText().isEmpty()) {
 						Account editAccount = new Account(
 								userNameField.getText(), passwordField.getText(),
 								emailField.getText(), fNameField.getText(),
@@ -811,6 +824,9 @@ public class DisplayPanel {
 						else{
 							JOptionPane.showMessageDialog(null, "ERROR: Account not edited!");
 						}
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "ERROR: Account not created!");
 					}
 					GUI.getGUI().updateMainPanel();
 				}catch(Exception e){
@@ -825,6 +841,7 @@ public class DisplayPanel {
 			public void actionPerformed(ActionEvent ae) {
 				try{
 					if(DataAccess.getInstance().deleteUser(thisAccount.getAccountName())){
+						DisplayPanel.setDisplayPanel(ObjectType.ACCOUNT);
 						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
 						GUI.getGUI().updateMainPanel();
 					}

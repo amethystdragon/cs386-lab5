@@ -1628,9 +1628,12 @@ public class DisplayPanel {
 			public void actionPerformed(ActionEvent ae) {
 				try{
 					JTextField skillNameField = new JTextField(30);
+					skillNameField.setText(skill.getName());
 					JTextField skillDescriptionField = new JTextField(45);
+					skillDescriptionField.setText(skill.getDescription());
 					JTextField levelReqField = new JTextField(30);
-
+					levelReqField.setText(skill.getLevelRequirement()+"");
+					
 					JPanel myPanel = new JPanel(new GridLayout(3,2));
 					myPanel.add(new JLabel("Item Name:"));
 					myPanel.add(skillNameField);
@@ -1687,14 +1690,14 @@ public class DisplayPanel {
 		final JList<String> characterList = new JList<String>(listModel);
 		bottomPanel.add(new JScrollPane(characterList), BorderLayout.CENTER);
 		
-		JButton displayItem = new JButton("Display Item"); 
+		JButton displayItem = new JButton("Display Character"); 
 		displayItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					SearchPanel.setSearchPanel(ObjectType.SKILL);
-					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchSkill(characterList.getSelectedValue(), -1, skill.getName()));
-					DisplayPanel.setDisplayPanel(ObjectType.SKILL);
+					SearchPanel.setSearchPanel(ObjectType.CHARACTER);
+					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchCharacter(skill.getName()));
+					DisplayPanel.setDisplayPanel(ObjectType.CHARACTER);
 					GUI.getGUI().updateMainPanel();
 				} catch (ClassNotFoundException | SQLException e) {
 					e.printStackTrace();

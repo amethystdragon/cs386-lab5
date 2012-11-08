@@ -72,10 +72,6 @@ public class GUI extends JFrame{
 
 		//Creates the file menu
 		JMenu file = new JMenu("File");
-		//Adds a import data option
-		file.add(createMenuItems("File Import"));
-		//Adds a save data option
-		file.addSeparator(); //Gotta keep 'em seperated.
 		//Adds an exit option
 		file.add(createMenuItems("Exit"));
 		menuBar.add(file);

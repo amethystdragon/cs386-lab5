@@ -595,7 +595,7 @@ public class DataAccess {
 	 * @param Character
 	 * @return
 	 */
-	public boolean editCharacter(String name, Character character){//TODO TEST!
+	public boolean editCharacter(String name, Character character){
 		String query = "UPDATE `character` SET " +
 		"`name`='"+character.getName()+
 		"', `race`='"+character.getRace()+
@@ -625,7 +625,7 @@ public class DataAccess {
 	 * @param item
 	 * @return
 	 */
-	public boolean editItem(String name, Item item){//TODO 
+	public boolean editItem(String name, Item item){
 		String query = "UPDATE `items` SET " +
 			"`name`= '" +item.getName()+
 			"', `damage`= " +item.getDamage()+
@@ -653,7 +653,7 @@ public class DataAccess {
 	 * @param level
 	 * @return true if successful
 	 */
-	public boolean editSkill(String name, Skill skill){//TODO TEST!
+	public boolean editSkill(String name, Skill skill){
 		boolean execute = false;
 		try{
 			execute = execute("UPDATE `skill` SET `name`='" + skill.getName()+
@@ -728,7 +728,7 @@ public class DataAccess {
 	 * @param Character
 	 * @return
 	 */
-	public boolean deleteCharacter(String name){//TODO TEST!
+	public boolean deleteCharacter(String name){
 		boolean execute = true;
 		try {
 			ResultSet rs = query("SELECT * FROM `character` WHERE `name`='"+name+"'");
@@ -750,7 +750,7 @@ public class DataAccess {
 	 * @param item
 	 * @return
 	 */
-	public boolean deleteItem(String name){//TODO
+	public boolean deleteItem(String name){
 		boolean done = true;
 		try{
 			//Checks to see if the user has characters still
@@ -768,11 +768,6 @@ public class DataAccess {
 			done = false;
 		}
 		return done;
-		
-		
-		
-		
-		
 	}
 
 	/**
@@ -781,14 +776,14 @@ public class DataAccess {
 	 * @param name
 	 * @return true if successful
 	 */
-	public boolean deleteSkill(String name) {//TODO TEST!
+	public boolean deleteSkill(String name) {
 		if(name.equalsIgnoreCase("none")) return false;
 		boolean execute = false;
 		try{
-			ResultSet rs = query("SELECT * FROM `skills` WHERE `name`='" + name + "';");
+			ResultSet rs = query("SELECT * FROM `skill` WHERE `name`='" + name + "';");
 			rs.next();
-			execute &= execute("DELETE FROM `character_has_skills` WHERE `skill_skill_ID`='" + rs.getString(1)+ "';");
-			execute &= execute("DELETE FROM `skills` WHERE `name`='" + name + "';");
+			execute &= execute("DELETE FROM `character_has_skill` WHERE `skill_skill_ID`='" + rs.getString(1)+ "';");
+			execute &= execute("DELETE FROM `skill` WHERE `name`='" + name + "';");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -819,5 +814,17 @@ public class DataAccess {
 			e.printStackTrace();
 		}
 		return execute;
+	}
+	
+	//Character has item
+	//Character has skill
+	
+	public List<Item> searchItem(Character character){
+	
+		return null;
+	}
+	public List<Skill> searchSkill(Skill skill){
+		
+		return null;
 	}
 }

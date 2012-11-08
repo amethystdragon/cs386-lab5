@@ -876,7 +876,6 @@ public class DisplayPanel {
 
 		//add to bottom panel
 		panel = new JPanel();
-		//TODO
 		panel.add(new JLabel("CHARACTERS OWNED BY ACCOUNT"));
 		bottomPanel.add(panel, BorderLayout.NORTH);
 		
@@ -1014,7 +1013,7 @@ public class DisplayPanel {
 	}
 
 
-	protected static void setDisplayPanel(Character character){
+	protected static void setDisplayPanel(final Character character){
 		JPanel topPanel = new JPanel(new BorderLayout());
 		topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
@@ -1047,8 +1046,7 @@ public class DisplayPanel {
 		panel1.add(field);
 		charSubPanel.add(panel1);
 		//add image
-		//TODO image
-		JLabel image = new JLabel(new ImageIcon("defaultchar.jpg"));
+		JLabel image = new JLabel(new ImageIcon(character.getModel()));
 		image.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		charSubPanel.add(image);
 		topSub.add(charSubPanel);
@@ -1098,14 +1096,112 @@ public class DisplayPanel {
 		field.setEditable(false);
 		subPanel.add(field);
 		JButton displayAccount = new JButton("Display Account");
-		//TODO
+		displayAccount.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					SearchPanel.setSearchPanel(ObjectType.ACCOUNT);
+					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
+					//TODODisplayPanel.setDisplayPanel;
+					GUI.getGUI().updateMainPanel();
+				} catch (ClassNotFoundException | SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		subPanel.add(displayAccount);
 		panel.add(subPanel);
 
 		subPanel = new JPanel(new GridLayout(1,2));
-		//edit & delete buttons
+		
 		JButton edit = new JButton("EDIT");
-		//TODO edit.addActionListener()
+		edit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				//character_ID	name	race	model	strength	constitution	intelligence	wisdom	agility	dexterity	level	experience	account_ID
+				try{
+					JTextField charNameField = new JTextField(30);
+					charNameField.setText(character.getName());
+					charNameField.setEditable(false);
+					JComboBox<Character.Race> raceBox = new JComboBox<Character.Race>();
+					for(Character.Race race: Character.Race.values()){
+						raceBox.addItem(race);
+					}
+					JTextField modelField = new JTextField(30);
+					modelField.setText(character.getModel());
+					JTextField strField = new JTextField(30);
+					strField.setText(Integer.toString(character.getStrength()));
+					JTextField conField = new JTextField(30);
+					conField.setText(Integer.toString(character.getConstitution()));
+					JTextField intField = new JTextField(30);
+					intField.setText(Integer.toString(character.getIntelligence()));
+					JTextField wisField = new JTextField(30);
+					wisField.setText(Integer.toString(character.getWisdom()));
+					JTextField agiField = new JTextField(30);
+					agiField.setText(Integer.toString(character.getAgility()));
+					JTextField dexField = new JTextField(30);
+					dexField.setText(Integer.toString(character.getDexterity()));
+					JTextField levelField = new JTextField(30);
+					levelField.setText(Integer.toString(character.getLevel()));
+					JTextField expField = new JTextField(30);
+					expField.setText(Integer.toString(character.getExperience()));
+
+					JPanel myPanel = new JPanel(new GridLayout(6,2));
+					//character_ID	name	race	model	strength	constitution	intelligence	wisdom	agility	dexterity	level	experience	account_ID
+					myPanel.add(new JLabel("Character Name:"));
+					myPanel.add(charNameField);
+					myPanel.add(new JLabel("Race"));
+					myPanel.add(raceBox);
+					myPanel.add(new JLabel("Model:"));
+					myPanel.add(modelField);
+					myPanel.add(new JLabel("Strength:"));
+					myPanel.add(strField);
+					myPanel.add(new JLabel("Constitution:"));
+					myPanel.add(conField);
+					myPanel.add(new JLabel("Intelligence:"));
+					myPanel.add(intField);
+					myPanel.add(new JLabel("Wisdom:"));
+					myPanel.add(wisField);
+					myPanel.add(new JLabel("Agility:"));
+					myPanel.add(agiField);
+					myPanel.add(new JLabel("Dexterity:"));
+					myPanel.add(dexField);
+					myPanel.add(new JLabel("Level:"));
+					myPanel.add(levelField);
+					myPanel.add(new JLabel("Experience:"));
+					myPanel.add(expField);
+
+					int result = JOptionPane.showConfirmDialog(null, myPanel, 
+							"Please Enter Character to Create", JOptionPane.OK_CANCEL_OPTION);
+					if (result == JOptionPane.OK_OPTION && !charNameField.getText().isEmpty() &&
+					raceBox.getSelectedItem() != null && !modelField.getText().isEmpty() &&
+					!strField.getText().isEmpty() && !conField.getText().isEmpty() &&
+					!intField.getText().isEmpty() && !wisField.getText().isEmpty() &&
+					!agiField.getText().isEmpty() && !dexField.getText().isEmpty() &&
+					!levelField.getText().isEmpty() && !expField.getText().isEmpty()){
+						Character addChar = new Character(
+								charNameField.getText(), (Character.Race)raceBox.getSelectedItem(),
+								modelField.getText(), Integer.parseInt(strField.getText()),
+								Integer.parseInt(conField.getText()), Integer.parseInt(intField.getText()),
+								Integer.parseInt(wisField.getText()), Integer.parseInt(agiField.getText()),
+								Integer.parseInt(dexField.getText()), Integer.parseInt(levelField.getText()),
+								Integer.parseInt(expField.getText()), character.getAccountUsername());
+						if(DataAccess.getInstance().editCharacter(addChar.getName(), addChar)){
+							DisplayPanel.setDisplayPanel(addChar);
+						}
+						else{
+							JOptionPane.showMessageDialog(null, "ERROR: Character not edited!");
+						}
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "ERROR: Character not edited!");
+					}
+					GUI.getGUI().updateMainPanel();
+				}catch(Exception e){
+					JOptionPane.showMessageDialog(null, "ERROR: Character not edited!");
+				}
+			}
+		});
 		subPanel.add(edit);
 		JButton delete = new JButton("DELETE");
 		delete.addActionListener(new ActionListener() {

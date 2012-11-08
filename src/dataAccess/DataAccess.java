@@ -817,14 +817,23 @@ public class DataAccess {
 	}
 	
 	//Character has item
-	//Character has skill
-	
 	public List<Item> searchItem(Character character){
 	
 		return null;
 	}
-	public List<Skill> searchSkill(Skill skill){
+	//Character has skill
+	public List<Skill> searchSkill(Character character){
 		
 		return null;
+	}
+	
+	public boolean addItemToCharacter(String item, String name){
+		
+		return false;
+	}
+	
+	public boolean addSkillToCharacter(String skill, String name){
+		
+		return false;
 	}
 }

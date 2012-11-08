@@ -652,17 +652,20 @@ public class DataAccess {
 	 */
 	public boolean deleteUser(String username){
 		boolean deleted = false;
-		Account user = Account.findAccount(username);
-		if (user != null){
+		//Account user = Account.findAccount(username);
+		//if (user != null){
 			try{
-				for(Character character : DataAccess.getInstance().searchCharacter("", null, username)){
+				//for(Character character : DataAccess.getInstance().searchCharacter("", null, username)){
 					//TODO delete from character hasitem reference table?
-					DataAccess.getInstance().deleteCharacter(character.getName());
-				}
+				//	DataAccess.getInstance().deleteCharacter(character.getName());
+				//}
 				execute("DELETE FROM `account` WHERE `account_name` = '" + username + "'");
 				deleted = true;
-			}catch(Exception e){e.printStackTrace();}
-		}
+			}catch(Exception e){
+				e.printStackTrace();
+				return false;
+			}
+		//}
 		return deleted;
 	}
 

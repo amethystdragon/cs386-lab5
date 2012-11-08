@@ -4,8 +4,6 @@ package gui;
 import gui.panels.DisplayPanel;
 import gui.panels.ResultsPanel;
 import gui.panels.SearchPanel;
-import helpers.Account;
-import helpers.Character;
 
 import java.awt.BorderLayout;
 import java.awt.Event;

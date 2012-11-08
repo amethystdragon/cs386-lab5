@@ -476,7 +476,9 @@ public class DataAccess {
 			"'"+item.getRarity()+"', " +
 			"'"+item.getValue()+"', " +
 			"'"+item.getModel()+"', " +
-			"(SELECT `ability_ID` FROM `Account` WHERE `name`='"+item.getAbility()+"'))";
+			"(SELECT `ability_ID` FROM `account` WHERE `name`='"+
+				((item.getAbility()==null)?"0":item.getAbility())
+				+"'))";
 		
 		try {
 			return execute(query);
@@ -619,7 +621,7 @@ public class DataAccess {
 	public boolean editSkill(String name, Skill skill){
 		boolean execute = false;
 		try{
-			execute = execute("UPDATE skill SET `name`='" + skill.getName()+
+			execute = execute("UPDATE `skill` SET `name`='" + skill.getName()+
 					"', `description`='" + skill.getDescription() +
 					"', `level_requirement`='" + skill.getLevelRequirement() +
 					"' WHERE `name`='" + name + "';");
@@ -637,8 +639,16 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean editAbility(String name, Ability ability){
-		//TODO
-		return false;
+		try{
+			return execute("UPDATE `skill` SET `name`='" + ability.getName()+
+					"', `description`='" + ability.getDescription() +
+					"', `level_requirement`='" + ability.getLevelRequirement() +
+					"' WHERE `name`='" + name + "';");
+		} catch (SQLException e) {
+			System.err.println("Error in Skill Update: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 
@@ -677,13 +687,18 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean deleteCharacter(String name){
+		boolean execute = true;
 		try {
-			return execute("DELETE FROM `character` WHERE `name`='"+name+"'");
-			//TODO delete from item reference table?
+			ResultSet rs = query("SELECT * FROM `character` WHERE `name`='"+name+"'");
+			rs.next();
+			execute &= execute("DELETE FROM `character_has_skill` WHERE `character_character_ID`='"+rs.getString(1)+"'");
+			execute &= execute("DELETE FROM `character_has_item` WHERE `character_character_ID`='"+rs.getString(1)+"'");
+			execute &= execute("DELETE FROM `character` WHERE `name`='"+name+"'");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			execute = false;
 		}
+		return execute;
 	}
 
 
@@ -699,7 +714,7 @@ public class DataAccess {
 			execute = execute("DELETE FROM `items` WHERE `name`='"+name+"'");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			execute = false;
 		}
 		return execute;
 	}
@@ -711,9 +726,13 @@ public class DataAccess {
 	 * @return true if successful
 	 */
 	public boolean deleteSkill(String name) {
+		if(name.equalsIgnoreCase("none")) return false;
 		boolean execute = false;
 		try{
-			execute = execute("DELETE FROM `skill` WHERE `name`='" + name + "';");
+			ResultSet rs = query("SELECT * FROM `skills` WHERE `name`='" + name + "';");
+			rs.next();
+			execute &= execute("DELETE FROM `character_has_skills` WHERE `skill_skill_ID`='" + rs.getString(1)+ "';");
+			execute &= execute("DELETE FROM `skills` WHERE `name`='" + name + "';");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

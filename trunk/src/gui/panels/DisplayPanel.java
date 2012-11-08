@@ -687,8 +687,8 @@ public class DisplayPanel {
 		}
 	}
 
-	protected static void setDisplayPanel(Account account){
-		final Account thisAccount = account;
+	protected static void setDisplayPanel(final Account account){
+		//final Account thisAccount = account;
 		displayPanel = new JPanel(new GridLayout(2,1));
 		JPanel topPanel = new JPanel(new GridLayout(8,1));
 		topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -800,17 +800,17 @@ public class DisplayPanel {
 				try{
 					JTextField userNameField = new JTextField(30);
 					userNameField.setEditable(false);
-					userNameField.setText(thisAccount.getAccountName());
+					userNameField.setText(account.getAccountName());
 					JTextField passwordField = new JTextField(30);
-					passwordField.setText(thisAccount.getPassword());
+					passwordField.setText(account.getPassword());
 					JTextField emailField = new JTextField(30);
-					emailField.setText(thisAccount.getEmail());
+					emailField.setText(account.getEmail());
 					JTextField fNameField = new JTextField(30);
-					fNameField.setText(thisAccount.getFirstName());
+					fNameField.setText(account.getFirstName());
 					JTextField lNameField = new JTextField(30);
-					lNameField.setText(thisAccount.getLastName());
+					lNameField.setText(account.getLastName());
 					JTextField currencyField = new JTextField(30);
-					currencyField.setText(Integer.toString(thisAccount.getCurrency()));
+					currencyField.setText(Integer.toString(account.getCurrency()));
 
 					JPanel myPanel = new JPanel(new GridLayout(6,2));
 					myPanel.add(new JLabel("UserName:"));
@@ -858,7 +858,7 @@ public class DisplayPanel {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				try{
-					if(DataAccess.getInstance().deleteUser(thisAccount.getAccountName())){
+					if(DataAccess.getInstance().deleteUser(account.getAccountName())){
 						DisplayPanel.setDisplayPanel(ObjectType.ACCOUNT);
 						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
 						GUI.getGUI().updateMainPanel();
@@ -876,11 +876,21 @@ public class DisplayPanel {
 
 		//add to bottom panel
 		panel = new JPanel();
+		//TODO
 		panel.add(new JLabel("CHARACTERS OWNED BY ACCOUNT"));
 		bottomPanel.add(panel, BorderLayout.NORTH);
-		bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
-		//TODO character owned by account bar
 		
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		try {
+			for(Character c : DataAccess.getInstance().searchCharacter("", null, account.getAccountName())){
+				listModel.addElement((c.getName()));
+			}
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		final JList<String> charList = new JList<String>(listModel);
+		bottomPanel.add(new JScrollPane(charList), BorderLayout.CENTER);
+
 		panel = new JPanel(new GridLayout(1,3));
 		JButton addCharacter = new JButton("Create Character");
 		addCharacter.addActionListener(new ActionListener() {
@@ -896,13 +906,14 @@ public class DisplayPanel {
 					JTextField currencyField = new JTextField(30);
 
 					JPanel myPanel = new JPanel(new GridLayout(6,2));
+					//character_ID	name	race	model	strength	constitution	intelligence	wisdom	agility	dexterity	level	experience	account_ID
 					myPanel.add(new JLabel("Character Name:"));
 					myPanel.add(charNameField);
-					myPanel.add(new JLabel("Password:"));
-					myPanel.add(passwordField);
+					myPanel.add(new JLabel("Race:"));
+					myPanel.add(passwordField);///TODO
 					myPanel.add(new JLabel("Email:"));
 					myPanel.add(emailField);
-					myPanel.add(new JLabel("First Name:"));
+					myPanel.add(new JLabel("Model:"));
 					myPanel.add(fNameField);
 					myPanel.add(new JLabel("Last Name:"));
 					myPanel.add(lNameField);
@@ -921,19 +932,50 @@ public class DisplayPanel {
 							ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
 						}
 						else{
-							JOptionPane.showMessageDialog(null, "ERROR: Account not created!");
+							JOptionPane.showMessageDialog(null, "ERROR: Character not created!");
 						}
 					}
 					GUI.getGUI().updateMainPanel();
 				}catch(Exception e){
-					JOptionPane.showMessageDialog(null, "ERROR: Account not created!");
+					JOptionPane.showMessageDialog(null, "ERROR: Character not created!");
 				}
 			}
 		});
 		panel.add(addCharacter);
+		
 		JButton displayCharacter = new JButton("Display Character");
+		displayCharacter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					SearchPanel.setSearchPanel(ObjectType.CHARACTER);
+					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchCharacter(charList.getSelectedValue(), null, ""));
+					DisplayPanel.setDisplayPanel(ObjectType.CHARACTER);
+					GUI.getGUI().updateMainPanel();
+				} catch (ClassNotFoundException | SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		panel.add(displayCharacter);
 		JButton deleteCharacter = new JButton("Delete Character");
+		deleteCharacter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					if(DataAccess.getInstance().deleteCharacter(charList.getSelectedValue())){
+						DisplayPanel.setDisplayPanel(account);
+						GUI.getGUI().updateMainPanel();
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "ERROR: Character not deleted!");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "ERROR: Character not deleted!");
+				}
+			}
+		});
 		panel.add(deleteCharacter);
 		bottomPanel.add(panel,BorderLayout.SOUTH);
 

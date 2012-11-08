@@ -238,7 +238,7 @@ public class DataAccess {
 			}
 			if(!username.isEmpty()){
 				if(!first) query += " AND ";
-				query += "`account_account_ID` IN (SELECT `account_ID` FROM `Account` WHERE `account_name` LIKE '%"+username+"%')";
+				query += "a.`account_ID` IN (SELECT `account_ID` FROM `account` WHERE `account_name` LIKE '%"+username+"%')";
 			}
 		}
 		List<Character> characters = null;

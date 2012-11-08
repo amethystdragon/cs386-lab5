@@ -8,7 +8,7 @@ public class Item {
 	public enum Rarity{
 		Common, Uncommon, Rare, Mythic, Legendary, Unique;
 
-		public static Rarity getRRarity(String string) {
+		public static Rarity getRarity(String string) {
 			switch(string){
 			case "Common":
 				return Common;

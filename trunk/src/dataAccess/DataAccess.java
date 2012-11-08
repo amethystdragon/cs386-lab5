@@ -278,7 +278,7 @@ public class DataAccess {
 	 */
 	public List<Item> searchItem(String name, Item.Rarity rarity, String ability){
 		String query = "SELECT i.`name`,i.`damage`,i.`armor`,i.`level_requirement`,i.`rarity`,i.`value`,i.`model`,a.`name` FROM `items` i INNER JOIN `ability` a ON a.ability_ID=i.ability_ID";
-		if(!name.isEmpty() && rarity!=null && !ability.isEmpty()){
+		if(!name.isEmpty() || rarity!=null || !ability.isEmpty()){
 			boolean first = true;
 			query += " WHERE ";
 			if(!name.isEmpty()){
@@ -290,9 +290,9 @@ public class DataAccess {
 				else query += " AND ";
 				query += "i.`rarity`='"+name+"'";
 			}
-			if(!username.isEmpty()){
+			if(!ability.isEmpty()){
 				if(!first) query += " AND ";
-				query += "`ability_ID`=(SELECT `ability_ID` FROM `ability` WHERE `name` LIKE '%"+ability+"%')";
+				query += "i.`ability_ID`=(SELECT `ability_ID` FROM `ability` WHERE `name` LIKE '%"+ability+"%')";
 			}
 		}
 		List<Item> items = null;
@@ -305,7 +305,7 @@ public class DataAccess {
 						Integer.parseInt(result.getString(2)), 
 						Integer.parseInt(result.getString(3)),
 						Integer.parseInt(result.getString(4)),
-						Rarity.valueOf(result.getString(5)), 
+						Rarity.getRarity(result.getString(5)), 
 						Integer.parseInt(result.getString(6)), 
 						result.getString(7), 
 						result.getString(8)));

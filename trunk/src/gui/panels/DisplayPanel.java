@@ -1615,10 +1615,24 @@ public class DisplayPanel {
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
-		bottomPanel.add(new JScrollPane(new JList<String>(listModel)), BorderLayout.CENTER);
+		final JList<String> itemList = new JList<String>(listModel);
+		bottomPanel.add(new JScrollPane(itemList), BorderLayout.CENTER);
 		
 		JButton displayCharacter = new JButton("Display Item"); 
-		//TODO display item
+		displayCharacter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					SearchPanel.setSearchPanel(ObjectType.ITEM);
+					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchItem(itemList.getSelectedValue(), null, ability.getName()));
+					DisplayPanel.setDisplayPanel(ObjectType.ITEM);
+					GUI.getGUI().updateMainPanel();
+				} catch (ClassNotFoundException | SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
 		bottomPanel.add(displayCharacter,BorderLayout.SOUTH);
 
 		displayPanel.add(topPanel);

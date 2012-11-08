@@ -50,6 +50,7 @@ public class ResultsPanel {
 
 		//Determines the type of helper and iterates through the list
 		//Also adds a JLabel
+		if(list.size()==0) return;
 		final Object listItem = list.get(0);
 		if(listItem instanceof Ability){
 			panel.add(new JLabel("ABILITY SEARCH RESULTS"));

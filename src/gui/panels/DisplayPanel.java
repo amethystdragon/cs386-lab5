@@ -1151,28 +1151,28 @@ public class DisplayPanel {
 		//attributes
 		subPanel = new JPanel(new GridLayout(1,2));
 		subPanel.add(new JLabel("  Damage"));
-		field = new JTextField(item.getDamage());
+		field = new JTextField(Integer.toString(item.getDamage()));
 		field.setEditable(false);
 		subPanel.add(field);
 		panel.add(subPanel);
 
 		subPanel = new JPanel(new GridLayout(1,2));
 		subPanel.add(new JLabel("  Armor"));
-		field = new JTextField(item.getArmor());
+		field = new JTextField(Integer.toString(item.getArmor()));
 		field.setEditable(false);
 		subPanel.add(field);
 		panel.add(subPanel);
 
 		subPanel = new JPanel(new GridLayout(1,2));
 		subPanel.add(new JLabel("  Level Requirement"));
-		field = new JTextField(item.getLevel());
+		field = new JTextField(Integer.toString(item.getLevel()));
 		field.setEditable(false);
 		subPanel.add(field);
 		panel.add(subPanel);
 
 		subPanel = new JPanel(new GridLayout(1,2));
 		subPanel.add(new JLabel("  Value"));
-		field = new JTextField(item.getValue());
+		field = new JTextField(Integer.toString(item.getValue()));
 		field.setEditable(false);
 		subPanel.add(field);
 		panel.add(subPanel);
@@ -1183,7 +1183,20 @@ public class DisplayPanel {
 		field.setEditable(false);
 		subPanel.add(field);
 		JButton displayAbility = new JButton("Display Ability");
-		//TODO display ability
+		displayAbility.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					if(Ability.findAbility(thisItem.getAbility()) != null){
+						DisplayPanel.setDisplayPanel(Ability.findAbility(thisItem.getAbility()));
+						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchAbility("", -1, ""));
+						GUI.getGUI().updateMainPanel();
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
 		subPanel.add(displayAbility);
 		panel.add(subPanel);
 

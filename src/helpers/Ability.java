@@ -1,5 +1,8 @@
 package helpers;
 
+import java.util.List;
+
+import dataAccess.DataAccess;
 import gui.GUI;
 import gui.GUI.ObjectType;
 
@@ -24,6 +27,17 @@ public class Ability {
 		this.name = name;
 		this.description = description;
 		this.level = level;
+	}
+	
+	public static Ability findAbility(String name){
+		Ability result = null;
+		try{
+			List<Ability> abilityList =DataAccess.getInstance().searchAbility(name, -1, "");
+			result = abilityList.get(0);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	//***Public Accessors***//

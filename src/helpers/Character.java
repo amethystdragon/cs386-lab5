@@ -3,8 +3,11 @@ package helpers;
 import gui.GUI;
 import gui.GUI.ObjectType;
 
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+
+import dataAccess.DataAccess;
 
 public class Character {
 	
@@ -148,9 +151,19 @@ public class Character {
 	 * @return
 	 */
 	public static Character findCharacters(String name){
-		Character results = null;
-		//TODO sql command to find all chars by name
-		return results;
+		Character ch = null;
+		List<Character> charList;
+		try {
+			charList = DataAccess.getInstance().searchCharacter(name, null, "");
+			ch = charList.get(0);
+		} catch (ClassNotFoundException e) {
+			
+			e.printStackTrace();
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		return ch;
 	}
 	
 	/**

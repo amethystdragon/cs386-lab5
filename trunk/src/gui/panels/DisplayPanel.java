@@ -126,10 +126,16 @@ public class DisplayPanel {
 									lNameField.getText(), Integer.parseInt(currencyField.getText()));
 							if(DataAccess.getInstance().addUser(addAccount)){
 								DisplayPanel.setDisplayPanel(addAccount);
+								ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
+							}
+							else{
+								JOptionPane.showMessageDialog(null, "ERROR: Account not added!");
 							}
 						}
 						GUI.getGUI().updateMainPanel();
-					}catch(Exception e){}
+					}catch(Exception e){
+						JOptionPane.showMessageDialog(null, "ERROR: Account not added!");
+					}
 				}
 			});
 			panel.add(add);
@@ -143,8 +149,7 @@ public class DisplayPanel {
 			panel = new JPanel();
 			panel.add(new JLabel("CHARACTERS OWNED BY ACCOUNT"));
 			bottomPanel.add(panel, BorderLayout.NORTH);
-			bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
-			//TODO Fix
+			bottomPanel.add(new JPanel(),BorderLayout.CENTER);
 			panel = new JPanel(new GridLayout(1,3));
 			JButton addCharacter = new JButton("Create Character");
 			panel.add(addCharacter);
@@ -265,10 +270,9 @@ public class DisplayPanel {
 			JPanel itemsPanel = new JPanel(new BorderLayout());
 			temp = new JPanel();
 			label = new JLabel("ITEMS OWNED BY CHARACTER");
-			//TODO fix
 			temp.add(label);
 			itemsPanel.add(temp, BorderLayout.NORTH);
-			itemsPanel.add(new JScrollBar(), BorderLayout.CENTER);
+			itemsPanel.add(new JPanel(), BorderLayout.CENTER);
 			panel = new JPanel(new GridLayout(3,1));
 			JButton addItem = new JButton("Add Item");
 			panel.add(addItem);
@@ -283,7 +287,7 @@ public class DisplayPanel {
 			label = new JLabel("CHARACTER SKILLS");
 			temp.add(label);
 			skillsPanel.add(temp, BorderLayout.NORTH);
-			skillsPanel.add(new JScrollBar(), BorderLayout.CENTER);
+			skillsPanel.add(new JPanel(), BorderLayout.CENTER);
 			panel = new JPanel(new GridLayout(3,1));
 			JButton addSkill = new JButton("Add Skill");
 			panel.add(addSkill);
@@ -359,10 +363,16 @@ public class DisplayPanel {
 									Integer.parseInt(levelReqField.getText()));
 							if(DataAccess.getInstance().addAbility(addAbility)){
 								DisplayPanel.setDisplayPanel(addAbility);
+								ResultsPanel.setResultsPanel(DataAccess.getInstance().searchAbility("", -1, ""));
+							}
+							else{
+								JOptionPane.showMessageDialog(null, "ERROR: Ability not created!");
 							}
 						}
 						GUI.getGUI().updateMainPanel();
-					}catch(Exception e){}
+					}catch(Exception e){
+						JOptionPane.showMessageDialog(null, "ERROR: Ability not created!");
+					}
 				}
 			});
 			subPanel.add(createAbility);
@@ -379,9 +389,9 @@ public class DisplayPanel {
 			panel = new JPanel();
 			panel.add(new JLabel("ITEMS WITH THIS ABILITY"));
 			bottomPanel.add(panel, BorderLayout.NORTH);
-			bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
+			bottomPanel.add(new JPanel(),BorderLayout.CENTER);
 
-			displayCharacter = new JButton("Display Item"); //TODO cleanup
+			displayCharacter = new JButton("Display Item");
 			bottomPanel.add(displayCharacter,BorderLayout.SOUTH);
 
 			displayPanel.add(topPanel);
@@ -490,7 +500,9 @@ public class DisplayPanel {
 						}
 						JTextField valueField = new JTextField(30);
 						JTextField modelField = new JTextField(30);
-
+						
+						//TODO ability?
+						
 						JPanel myPanel = new JPanel(new GridLayout(7,2));
 						myPanel.add(new JLabel("Item Name:"));
 						myPanel.add(itemNameField);
@@ -517,10 +529,16 @@ public class DisplayPanel {
 									modelField.getText(), null);
 							if(DataAccess.getInstance().addItem(addItem)){
 								DisplayPanel.setDisplayPanel(addItem);
+								ResultsPanel.setResultsPanel(DataAccess.getInstance().searchItem("", null, ""));
+							}
+							else{
+								JOptionPane.showMessageDialog(null, "ERROR: Item not created!");
 							}
 						}
 						GUI.getGUI().updateMainPanel();
-					}catch(Exception e){}
+					}catch(Exception e){
+						JOptionPane.showMessageDialog(null, "ERROR: Item not created!");
+					}
 				}
 			});
 			subPanel.add(createItem);
@@ -540,9 +558,9 @@ public class DisplayPanel {
 			panel = new JPanel();
 			panel.add(new JLabel("CHARACTERS WITH THIS ITEM"));
 			bottomPanel.add(panel, BorderLayout.NORTH);
-			bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
+			bottomPanel.add(new JPanel(),BorderLayout.CENTER);
 
-			displayCharacter = new JButton("Display Character"); //TODO cleanup
+			displayCharacter = new JButton("Display Character"); 
 			bottomPanel.add(displayCharacter,BorderLayout.SOUTH);
 
 			displayPanel.add(topPanel);
@@ -608,10 +626,16 @@ public class DisplayPanel {
 									Integer.parseInt(levelReqField.getText()));
 							if(DataAccess.getInstance().addSkill(addSkill)){
 								DisplayPanel.setDisplayPanel(addSkill);
+								ResultsPanel.setResultsPanel(DataAccess.getInstance().searchSkill("", -1, ""));
+							}
+							else{
+								JOptionPane.showMessageDialog(null, "ERROR: Skill not created!");
 							}
 						}
 						GUI.getGUI().updateMainPanel();
-					}catch(Exception e){}
+					}catch(Exception e){
+						JOptionPane.showMessageDialog(null, "ERROR: Skill not created!");
+					}
 				}
 			});
 			subPanel.add(createSkill);
@@ -628,9 +652,9 @@ public class DisplayPanel {
 			panel = new JPanel();
 			panel.add(new JLabel("CHARACTERS WITH THIS SKILL"));
 			bottomPanel.add(panel, BorderLayout.NORTH);
-			bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
+			bottomPanel.add(new JPanel(),BorderLayout.CENTER);
 
-			displayCharacter = new JButton("Display Character");//TODO cleanup
+			displayCharacter = new JButton("Display Character");
 			bottomPanel.add(displayCharacter,BorderLayout.SOUTH);
 
 			displayPanel.add(topPanel);
@@ -727,15 +751,21 @@ public class DisplayPanel {
 								lNameField.getText(), Integer.parseInt(currencyField.getText()));
 						if(DataAccess.getInstance().addUser(addAccount)){
 							DisplayPanel.setDisplayPanel(addAccount);
+							ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
+						}
+						else{
+							JOptionPane.showMessageDialog(null, "ERROR: Account not created!");
 						}
 					}
 					GUI.getGUI().updateMainPanel();
-				}catch(Exception e){}
+				}catch(Exception e){
+					JOptionPane.showMessageDialog(null, "ERROR: Account not created!");
+				}
 			}
 		});
 		panel.add(add);
 		JButton edit = new JButton("EDIT ACCOUNT");
-		add.addActionListener(new ActionListener() {
+		edit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				try{
@@ -778,16 +808,29 @@ public class DisplayPanel {
 							DisplayPanel.setDisplayPanel(editAccount);
 							ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
 						}
+						else{
+							JOptionPane.showMessageDialog(null, "ERROR: Account not edited!");
+						}
 					}
 					GUI.getGUI().updateMainPanel();
-				}catch(Exception e){}
+				}catch(Exception e){
+					JOptionPane.showMessageDialog(null, "ERROR: Account not edited!");
+				}
 			}
 		});
 		panel.add(edit);
 		JButton delete = new JButton("DELETE ACCOUNT");
 		try{
-			DataAccess.getInstance().deleteUser(thisAccount.getAccountName());
-		}catch(Exception e){}
+			if(DataAccess.getInstance().deleteUser(thisAccount.getAccountName())){
+				ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
+				GUI.getGUI().updateMainPanel();
+			}
+			else{
+				JOptionPane.showMessageDialog(null, "ERROR: Account not deleted!");
+			}
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null, "ERROR: Account not deleted!");
+		}
 		panel.add(delete);
 		topPanel.add(panel);
 
@@ -796,9 +839,57 @@ public class DisplayPanel {
 		panel.add(new JLabel("CHARACTERS OWNED BY ACCOUNT"));
 		bottomPanel.add(panel, BorderLayout.NORTH);
 		bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
-
+		//TODO character owned by account bar
+		
 		panel = new JPanel(new GridLayout(1,3));
 		JButton addCharacter = new JButton("Create Character");
+		addCharacter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					JTextField charNameField = new JTextField(30);
+					
+					JTextField passwordField = new JTextField(30);
+					JTextField emailField = new JTextField(30);
+					JTextField fNameField = new JTextField(30);
+					JTextField lNameField = new JTextField(30);
+					JTextField currencyField = new JTextField(30);
+
+					JPanel myPanel = new JPanel(new GridLayout(6,2));
+					myPanel.add(new JLabel("UserName:"));
+					myPanel.add(charNameField);
+					myPanel.add(new JLabel("Password:"));
+					myPanel.add(passwordField);
+					myPanel.add(new JLabel("Email:"));
+					myPanel.add(emailField);
+					myPanel.add(new JLabel("First Name:"));
+					myPanel.add(fNameField);
+					myPanel.add(new JLabel("Last Name:"));
+					myPanel.add(lNameField);
+					myPanel.add(new JLabel("Currency:"));
+					myPanel.add(currencyField);
+
+					int result = JOptionPane.showConfirmDialog(null, myPanel, 
+							"Please Enter Account to Create", JOptionPane.OK_CANCEL_OPTION);
+					if (result == JOptionPane.OK_OPTION) {
+						Account addAccount = new Account(
+								charNameField.getText(), passwordField.getText(),
+								emailField.getText(), fNameField.getText(),
+								lNameField.getText(), Integer.parseInt(currencyField.getText()));
+						if(DataAccess.getInstance().addUser(addAccount)){
+							DisplayPanel.setDisplayPanel(addAccount);
+							ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
+						}
+						else{
+							JOptionPane.showMessageDialog(null, "ERROR: Account not created!");
+						}
+					}
+					GUI.getGUI().updateMainPanel();
+				}catch(Exception e){
+					JOptionPane.showMessageDialog(null, "ERROR: Account not created!");
+				}
+			}
+		});
 		panel.add(addCharacter);
 		JButton displayCharacter = new JButton("Display Character");
 		panel.add(displayCharacter);

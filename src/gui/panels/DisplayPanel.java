@@ -820,17 +820,22 @@ public class DisplayPanel {
 		});
 		panel.add(edit);
 		JButton delete = new JButton("DELETE ACCOUNT");
-		try{
-			if(DataAccess.getInstance().deleteUser(thisAccount.getAccountName())){
-				ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
-				GUI.getGUI().updateMainPanel();
+		delete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					if(DataAccess.getInstance().deleteUser(thisAccount.getAccountName())){
+						ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
+						GUI.getGUI().updateMainPanel();
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "ERROR: Account not deleted!");
+					}
+				}catch(Exception e){
+					JOptionPane.showMessageDialog(null, "ERROR: Account not deleted!");
+				}
 			}
-			else{
-				JOptionPane.showMessageDialog(null, "ERROR: Account not deleted!");
-			}
-		}catch(Exception e){
-			JOptionPane.showMessageDialog(null, "ERROR: Account not deleted!");
-		}
+		});
 		panel.add(delete);
 		topPanel.add(panel);
 
@@ -856,7 +861,7 @@ public class DisplayPanel {
 					JTextField currencyField = new JTextField(30);
 
 					JPanel myPanel = new JPanel(new GridLayout(6,2));
-					myPanel.add(new JLabel("UserName:"));
+					myPanel.add(new JLabel("Character Name:"));
 					myPanel.add(charNameField);
 					myPanel.add(new JLabel("Password:"));
 					myPanel.add(passwordField);

@@ -471,7 +471,7 @@ public class DataAccess {
 		String query = "INSERT INTO `mydb`.`character` " +
 		"(`name`, `race`, `model`, `strength`, " +
 		"`constitution`, `intelligence`, `wisdom`, `agility`, " +
-		"`dexterity`, `level`, `experience`, `account_account_ID`) VALUES (" +
+		"`dexterity`, `level`, `experience`, `account_ID`) VALUES (" +
 		"'"+character.getName()+"', " +
 		"'"+character.getRace()+"', " +
 		"'"+character.getModel()+"', " +
@@ -483,7 +483,7 @@ public class DataAccess {
 		"'"+character.getDexterity()+"', " +
 		"'"+character.getLevel()+"', " +
 		"'"+character.getExperience()+"', " +
-		"(SELECT `account_ID` FROM `Account` WHERE `account_name`='"+character.getAccountUsername()+"'))";
+		"(SELECT `account_ID` FROM `account` WHERE `account_name`='"+character.getAccountUsername()+"'))";
 		
 		try {
 			return execute(query);
@@ -734,7 +734,7 @@ public class DataAccess {
 			ResultSet rs = query("SELECT * FROM `character` WHERE `name`='"+name+"'");
 			rs.next();
 			execute &= execute("DELETE FROM `character_has_skill` WHERE `character_character_ID`='"+rs.getString(1)+"'");
-			execute &= execute("DELETE FROM `character_has_item` WHERE `character_character_ID`='"+rs.getString(1)+"'");
+			execute &= execute("DELETE FROM `character_has_items` WHERE `character_character_ID`='"+rs.getString(1)+"'");
 			execute &= execute("DELETE FROM `character` WHERE `name`='"+name+"'");
 		} catch (SQLException e) {
 			e.printStackTrace();

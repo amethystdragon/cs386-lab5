@@ -896,44 +896,72 @@ public class DisplayPanel {
 		addCharacter.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
+				//character_ID	name	race	model	strength	constitution	intelligence	wisdom	agility	dexterity	level	experience	account_ID
 				try{
 					JTextField charNameField = new JTextField(30);
-					
-					JTextField passwordField = new JTextField(30);
-					JTextField emailField = new JTextField(30);
-					JTextField fNameField = new JTextField(30);
-					JTextField lNameField = new JTextField(30);
-					JTextField currencyField = new JTextField(30);
+					JComboBox<Character.Race> raceBox = new JComboBox<Character.Race>();
+					for(Character.Race race: Character.Race.values()){
+						raceBox.addItem(race);
+					}
+					JTextField modelField = new JTextField(30);
+					JTextField strField = new JTextField(30);
+					JTextField conField = new JTextField(30);
+					JTextField intField = new JTextField(30);
+					JTextField wisField = new JTextField(30);
+					JTextField agiField = new JTextField(30);
+					JTextField dexField = new JTextField(30);
+					JTextField levelField = new JTextField(30);
+					JTextField expField = new JTextField(30);
 
 					JPanel myPanel = new JPanel(new GridLayout(6,2));
 					//character_ID	name	race	model	strength	constitution	intelligence	wisdom	agility	dexterity	level	experience	account_ID
 					myPanel.add(new JLabel("Character Name:"));
 					myPanel.add(charNameField);
-					myPanel.add(new JLabel("Race:"));
-					myPanel.add(passwordField);///TODO
-					myPanel.add(new JLabel("Email:"));
-					myPanel.add(emailField);
+					myPanel.add(new JLabel("Race"));
+					myPanel.add(raceBox);
 					myPanel.add(new JLabel("Model:"));
-					myPanel.add(fNameField);
-					myPanel.add(new JLabel("Last Name:"));
-					myPanel.add(lNameField);
-					myPanel.add(new JLabel("Currency:"));
-					myPanel.add(currencyField);
+					myPanel.add(modelField);
+					myPanel.add(new JLabel("Strength:"));
+					myPanel.add(strField);
+					myPanel.add(new JLabel("Constitution:"));
+					myPanel.add(conField);
+					myPanel.add(new JLabel("Intelligence:"));
+					myPanel.add(intField);
+					myPanel.add(new JLabel("Wisdom:"));
+					myPanel.add(wisField);
+					myPanel.add(new JLabel("Agility:"));
+					myPanel.add(agiField);
+					myPanel.add(new JLabel("Dexterity:"));
+					myPanel.add(dexField);
+					myPanel.add(new JLabel("Level:"));
+					myPanel.add(levelField);
+					myPanel.add(new JLabel("Experience:"));
+					myPanel.add(expField);
 
 					int result = JOptionPane.showConfirmDialog(null, myPanel, 
-							"Please Enter Account to Create", JOptionPane.OK_CANCEL_OPTION);
-					if (result == JOptionPane.OK_OPTION) {
-						Account addAccount = new Account(
-								charNameField.getText(), passwordField.getText(),
-								emailField.getText(), fNameField.getText(),
-								lNameField.getText(), Integer.parseInt(currencyField.getText()));
-						if(DataAccess.getInstance().addUser(addAccount)){
-							DisplayPanel.setDisplayPanel(addAccount);
-							ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
+							"Please Enter Character to Create", JOptionPane.OK_CANCEL_OPTION);
+					if (result == JOptionPane.OK_OPTION && !charNameField.getText().isEmpty() &&
+					raceBox.getSelectedItem() != null && !modelField.getText().isEmpty() &&
+					!strField.getText().isEmpty() && !conField.getText().isEmpty() &&
+					!intField.getText().isEmpty() && !wisField.getText().isEmpty() &&
+					!agiField.getText().isEmpty() && !dexField.getText().isEmpty() &&
+					!levelField.getText().isEmpty() && !expField.getText().isEmpty()){
+						Character addChar = new Character(
+								charNameField.getText(), (Character.Race)raceBox.getSelectedItem(),
+								modelField.getText(), Integer.parseInt(strField.getText()),
+								Integer.parseInt(conField.getText()), Integer.parseInt(intField.getText()),
+								Integer.parseInt(wisField.getText()), Integer.parseInt(agiField.getText()),
+								Integer.parseInt(dexField.getText()), Integer.parseInt(levelField.getText()),
+								Integer.parseInt(expField.getText()), account.getAccountName());
+						if(DataAccess.getInstance().addCharacter(addChar)){
+							DisplayPanel.setDisplayPanel(account);
 						}
 						else{
 							JOptionPane.showMessageDialog(null, "ERROR: Character not created!");
 						}
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "ERROR: Character not created!");
 					}
 					GUI.getGUI().updateMainPanel();
 				}catch(Exception e){
@@ -949,8 +977,8 @@ public class DisplayPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					SearchPanel.setSearchPanel(ObjectType.CHARACTER);
-					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchCharacter(charList.getSelectedValue(), null, ""));
-					DisplayPanel.setDisplayPanel(ObjectType.CHARACTER);
+					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchCharacter("", null, ""));
+					DisplayPanel.setDisplayPanel(Character.findCharacters(charList.getSelectedValue()));
 					GUI.getGUI().updateMainPanel();
 				} catch (ClassNotFoundException | SQLException e) {
 					e.printStackTrace();

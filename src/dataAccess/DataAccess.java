@@ -269,6 +269,41 @@ public class DataAccess {
 		return characters;
 	}
 
+	public List<Character> searchCharacter(String skill) {
+		if(skill==null || skill.isEmpty()) return null;
+		String query = "SELECT c.`name` , c.`race` , c.`model` , c.`strength` , c.`constitution` " +
+				", c.`intelligence` , c.`wisdom` , c.`agility` , c.`dexterity` , c.`level` , c.`experience` " +
+				", a.`account_name` FROM `character` c INNER JOIN `account` a ON c.`account_ID` = a.`account_ID` WHERE character_ID IN " +
+				"(SELECT `character_character_ID` FROM `character_has_skill` WHERE skill_skill_ID=" +
+				"(SELECT skill_ID FROM skill WHERE name='"+skill+"'));";
+		List<Character> characters = null;
+		try {
+			ResultSet result = query(query);
+			characters = new ArrayList<Character>();
+			while(result.next()){
+				Character newChar = new Character(result.getString(1), 
+						Race.getRace(result.getString(2)), 
+						result.getString(3), 
+						Integer.parseInt(result.getString(4)), 
+						Integer.parseInt(result.getString(5)),
+						Integer.parseInt(result.getString(6)),
+						Integer.parseInt(result.getString(7)),
+						Integer.parseInt(result.getString(8)),
+						Integer.parseInt(result.getString(9)),
+						Integer.parseInt(result.getString(10)),
+						Integer.parseInt(result.getString(11)),
+						result.getString(12));
+				characters.add(newChar);
+				System.out.println(newChar);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		System.out.println(characters.size());
+		return characters;
+	}
+
 	/**
 	 * 
 	 * @author Karl
@@ -668,10 +703,16 @@ public class DataAccess {
 			rs.next();
 			rs = query("SELECT COUNT(`name`) FROM `character` WHERE `account_ID`="+rs.getString(1));
 			rs.next();
-			//IF so the account will not be deleted
+			//If so the account will not be deleted
 			if(Integer.parseInt(rs.getString(1))>0){
+				//Deletes any items relations the user had
+				done &= execute("DELETE FROM `character_has_items` WHERE `character_character_ID` IN (SELECT `character_ID` FROM `character` WHERE `account_name`='"+username+"')");
+				//Deletes any skills relations that the user had
+				done &= execute("DELETE FROM `character_has_skills` WHERE `character_character_ID` IN (SELECT `character_ID` FROM `character` WHERE `account_name`='"+username+"')");
+				//Removes any characters tha tthe user had
 				done &= execute("DELETE FROM `character` WHERE `account_ID` IN (SELECT `account_ID` FROM `account` WHERE `account_name`='"+username+"')");
 			}
+			//Removes the user
 			done &= execute("DELETE FROM `account` WHERE `account_name` = '" + username + "'");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -710,14 +751,28 @@ public class DataAccess {
 	 * @return
 	 */
 	public boolean deleteItem(String name){//TODO
-		boolean execute = false;
-		try {
-			execute = execute("DELETE FROM `items` WHERE `name`='"+name+"'");
-		} catch (SQLException e) {
+		boolean done = true;
+		try{
+			//Checks to see if the user has characters still
+			ResultSet rs  = query("SELECT * FROM `items` WHERE `name`='"+name+"'");
+			rs.next();
+			rs = query("SELECT COUNT(`name`) FROM `character_has_items` WHERE `items_item_ID`="+rs.getString(1));
+			rs.next();
+			//If so the account will not be deleted
+			if(Integer.parseInt(rs.getString(1))>0){
+				done &= execute("DELETE FROM `character_has_items` WHERE `account_ID` IN (SELECT `item_ID` FROM `items` WHERE `name`='"+name+"')");
+			}
+			done &= execute("DELETE FROM `items` WHERE `name`='"+name+"'");
+		}catch(Exception e){
 			e.printStackTrace();
-			execute = false;
+			done = false;
 		}
-		return execute;
+		return done;
+		
+		
+		
+		
+		
 	}
 
 	/**

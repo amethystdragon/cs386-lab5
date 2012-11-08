@@ -1421,6 +1421,7 @@ public class DisplayPanel {
 		panel.add(new JLabel("CHARACTERS WITH THIS ITEM"));
 		bottomPanel.add(panel, BorderLayout.NORTH);
 		bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
+		
 		//TODO display chars
 		JButton displayCharacter = new JButton("Display Character"); 
 		//TODO actionListener
@@ -1431,7 +1432,7 @@ public class DisplayPanel {
 		GUI.getGUI().updateMainPanel();
 	}
 
-	protected static void setDisplayPanel(Skill skill){
+	protected static void setDisplayPanel(final Skill skill){
 		displayPanel = new JPanel(new GridLayout(2,1));
 		JPanel topPanel = new JPanel(new GridLayout(2,1));
 		topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -1497,26 +1498,87 @@ public class DisplayPanel {
 			}
 		});
 		subPanel.add(createSkill);
-		JButton edit = new JButton("EDIT SKILL"); //TODO
-		//TODO add.addActionListener()
+		JButton edit = new JButton("EDIT SKILL");
+		edit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					JTextField skillNameField = new JTextField(30);
+					JTextField skillDescriptionField = new JTextField(45);
+					JTextField levelReqField = new JTextField(30);
+
+					JPanel myPanel = new JPanel(new GridLayout(3,2));
+					myPanel.add(new JLabel("Item Name:"));
+					myPanel.add(skillNameField);
+					myPanel.add(new JLabel("Description:"));
+					myPanel.add(skillDescriptionField);
+					myPanel.add(new JLabel("Level Requirement:"));
+					myPanel.add(levelReqField);
+
+
+					int result = JOptionPane.showConfirmDialog(null, myPanel, 
+							"Edit Ability: "+skill.getName(), JOptionPane.OK_CANCEL_OPTION);
+					if (result == JOptionPane.OK_OPTION) {
+						Skill editSkill = new Skill(skillNameField.getText(), skillDescriptionField.getText(), Integer.parseInt(levelReqField.getText()));
+						if(DataAccess.getInstance().editSkill(skill.getName(),editSkill)){
+							DisplayPanel.setDisplayPanel(editSkill);
+						}
+					}
+					GUI.getGUI().updateMainPanel();
+				}catch(Exception e){}
+			}
+		});
 		subPanel.add(edit);
-		JButton delete = new JButton("DELETE SKILL"); //TODO
-		//TODO add.addActionListener()
+		JButton delete = new JButton("DELETE SKILL");
+		delete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					DataAccess.getInstance().deleteSkill(skill.getName());
+					DisplayPanel.setDisplayPanel(GUI.ObjectType.SKILL);
+					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchSkill("", -1, ""));
+					GUI.getGUI().updateMainPanel();
+				}catch(Exception e){e.printStackTrace();}
+			}
+		});
+		
 		subPanel.add(delete);
 		panel.add(subPanel, BorderLayout.SOUTH);
 		topPanel.add(panel);
-
+		
+		
 		JPanel bottomPanel = new JPanel(new BorderLayout());
 		bottomPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		panel = new JPanel();
 		panel.add(new JLabel("CHARACTERS WITH THIS SKILL"));
 		bottomPanel.add(panel, BorderLayout.NORTH);
-		bottomPanel.add(new JScrollBar(),BorderLayout.CENTER);
-		//TODO display chars
-		JButton displayCharacter = new JButton("Display Character"); 
-		//TODO actionlistener
-		bottomPanel.add(displayCharacter,BorderLayout.SOUTH);
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		try {
+			for(Character c : DataAccess.getInstance().searchCharacter(skill.getName()))
+				listModel.addElement(c.getName());
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		final JList<String> characterList = new JList<String>(listModel);
+		bottomPanel.add(new JScrollPane(characterList), BorderLayout.CENTER);
+		
+		JButton displayItem = new JButton("Display Item"); 
+		displayItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					SearchPanel.setSearchPanel(ObjectType.SKILL);
+					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchSkill(characterList.getSelectedValue(), -1, skill.getName()));
+					DisplayPanel.setDisplayPanel(ObjectType.SKILL);
+					GUI.getGUI().updateMainPanel();
+				} catch (ClassNotFoundException | SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		bottomPanel.add(displayItem,BorderLayout.SOUTH);
 
 		displayPanel.add(topPanel);
 		displayPanel.add(bottomPanel);
@@ -1551,7 +1613,6 @@ public class DisplayPanel {
 		label = new JLabel("Description");
 		temp.add(label);
 		panel.add(temp, BorderLayout.NORTH);
-		//TODO CHANGE ALL TO TEXT AREAS
 		field = new JTextField(ability.getDescription());
 		field.setEditable(false);
 		panel.add(field, BorderLayout.CENTER);
@@ -1660,8 +1721,8 @@ public class DisplayPanel {
 		final JList<String> itemList = new JList<String>(listModel);
 		bottomPanel.add(new JScrollPane(itemList), BorderLayout.CENTER);
 		
-		JButton displayCharacter = new JButton("Display Item"); 
-		displayCharacter.addActionListener(new ActionListener() {
+		JButton displayItem = new JButton("Display Item"); 
+		displayItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
@@ -1675,7 +1736,7 @@ public class DisplayPanel {
 			}
 		});
 		
-		bottomPanel.add(displayCharacter,BorderLayout.SOUTH);
+		bottomPanel.add(displayItem,BorderLayout.SOUTH);
 
 		displayPanel.add(topPanel);
 		displayPanel.add(bottomPanel);

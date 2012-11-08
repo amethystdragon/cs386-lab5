@@ -1,132 +1,61 @@
 --
 -- Database: `mydb`
 --
--- --------------------------------------------------------
 --
--- Table structure for table `ability`
+-- Dumping data for table `ability`
 --
-
-DROP TABLE IF EXISTS `ability`;
-CREATE TABLE IF NOT EXISTS `ability` (
- `ability_ID` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(30) NOT NULL,
- `description` text NOT NULL,
- `level_requirement` int(11) NOT NULL,
- PRIMARY KEY (`ability_ID`),
- UNIQUE KEY `name_UNIQUE` (`name`)
-) ;
--- --------------------------------------------------------
+INSERT INTO `ability` (`ability_ID`, `name`, `description`, `level_requirement`) VALUES
+(0, 'None', 'This item has no special ability.', 0),
+(1, 'Electricity', 'Strikes the opponent with electricity with each hit', 900),
+(2, 'Fire', 'Flame ON!', 25),
+(3, 'Water', 'Drown someone on land!', 25),
+(4, 'telepathy', 'Can read other peoples'' thoughts and communicate with others with the mind', 80);
 --
--- Table structure for table `account`
+-- Dumping data for table `account`
 --
-DROP TABLE IF EXISTS `account`;
-CREATE TABLE IF NOT EXISTS `account` (
- `account_ID` int(11) NOT NULL AUTO_INCREMENT,
- `account_name` varchar(20) NOT NULL,
- `password` varchar(20) NOT NULL,
- `email` varchar(45) NOT NULL,
- `first_name` varchar(45) NOT NULL,
- `last_name` varchar(45) NOT NULL,
- `ingame_currency` int(11) NOT NULL,
- PRIMARY KEY (`account_ID`),
- UNIQUE KEY `account_name_UNIQUE` (`account_name`)
-) ;
--- --------------------------------------------------------
+INSERT INTO `account` (`account_ID`, `account_name`, `password`, `email`, `first_name`, `last_name`, `ingame_currency`) VALUES
+(1, 'TestyMcTester', 'password', 'testy.mctester@email.com', 'Testy', 'McTester', 2000),
+(2, 'Testit', 'asdjdfl', 'dude@email.ru', 'Dude', 'Sweeeeeet', 1902),
+(3, 'WillAccount', 'adljkjfkl', 'will@gmail.com', 'Will', 'Stevens', 19280),
+(4, 'karl', 'password', 'my@email.com', 'Karl', 'S', 99887633),
+(5, 'trussm_test', 'Ilove5h3', 'trussm@msoe.edu', 'Malcolm', 'Truss', 9000);
 --
--- Table structure for table `character`
+-- Dumping data for table `items`
 --
-DROP TABLE IF EXISTS `character`;
-CREATE TABLE IF NOT EXISTS `character` (
- `character_ID` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(30) NOT NULL,
- `race` varchar(15) NOT NULL,
- `model` varchar(45) NOT NULL,
- `strength` int(11) NOT NULL,
- `constitution` int(11) NOT NULL,
- `intelligence` int(11) NOT NULL,
- `wisdom` int(11) NOT NULL,
- `agility` int(11) NOT NULL,
- `dexterity` int(11) NOT NULL,
- `level` int(11) NOT NULL,
- `experience` int(11) NOT NULL,
- `account_ID` int(11) NOT NULL,
- PRIMARY KEY (`character_ID`),
- UNIQUE KEY `name_UNIQUE` (`name`),
- KEY `fk_character_account1_idx` (`account_ID`)
-) ;
--- --------------------------------------------------------
+INSERT INTO `items` (`item_ID`, `name`, `damage`, `armor`, `level_requirement`, `rarity`, `value`, `model`, `ability_ID`) VALUES
+(1, 'Fire Sword', 30, 5, 800, 'Rare', 2000, 'firesword.jpg', 3),
+(2, 'King Slayer', 999, 20, 50, 'Mythic', 999999, 'ks.jpg', 0),
+(3, 'Knife', 2, 1, 0, 'Common', 1, 'knife.jpg', 0);
 --
--- Table structure for table `character_has_items`
+-- Dumping data for table `skill`
 --
-DROP TABLE IF EXISTS `character_has_items`;
-CREATE TABLE IF NOT EXISTS `character_has_items` (
- `character_character_ID` int(11) NOT NULL,
- `items_item_ID` int(11) NOT NULL,
- KEY `fk_character_has_items_items1_idx` (`items_item_ID`),
- KEY `fk_character_has_items_character1_idx` (`character_character_ID`)
-);
--- --------------------------------------------------------
+INSERT INTO `skill` (`skill_ID`, `name`, `description`, `level_requirement`) VALUES
+(1, 'Basic ', 'basic', 1),
+(2, 'High Jump', 'Jump higher then the average person', 2);
 --
--- Table structure for table `character_has_skill`
+-- Dumping data for table `character`
 --
-DROP TABLE IF EXISTS `character_has_skill`;
-CREATE TABLE IF NOT EXISTS `character_has_skill` (
- `character_character_ID` int(11) NOT NULL,
- `skill_skill_ID` int(11) NOT NULL,
- KEY `fk_character_has_skill_skill1_idx` (`skill_skill_ID`),
- KEY `fk_character_has_skill_character1_idx` (`character_character_ID`)
-) ;
--- --------------------------------------------------------
+INSERT INTO `character` (`character_ID`, `name`, `race`, `model`, `strength`, `constitution`, `intelligence`, `wisdom`, `agility`, `dexterity`, `level`, `experience`, `account_ID`) VALUES
+(1, 'Charles', 'Dwarf', 'test.jpg', 18, 15, 9, 10, 5, 7, 80, 1200, 2),
+(2,'Bert','Elf','test.jpg',14,17,8,9,12,11,70,1400,1),
+(3,'Sue','Human','test.jpg',18,12,11,11,11,4,20,1600,2),
+(4,'John','Dwarf','test.jpg',18,15,10,15,16,3,30,1800,3),
+(5,'Matt','Dwarf','test.jpg',17,17,7,14,15,14,70,2000,4);
 --
--- Table structure for table `items`
+-- Dumping data for table `character_has_items`
 --
-DROP TABLE IF EXISTS `items`;
-CREATE TABLE IF NOT EXISTS `items` (
- `item_ID` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(30) NOT NULL,
- `damage` int(11) NOT NULL,
- `armor` int(11) NOT NULL,
- `level_requirement` int(11) NOT NULL,
- `rarity` varchar(10) NOT NULL,
- `value` int(11) NOT NULL,
- `model` varchar(45) NOT NULL,
- `ability_ID` int(11) NOT NULL,
- PRIMARY KEY (`item_ID`),
- UNIQUE KEY `name_UNIQUE` (`name`),
- KEY `fk_items_abilitiy1_idx` (`ability_ID`)
-) ;
--- --------------------------------------------------------
+INSERT INTO `character_has_items` (`character_character_ID`, `items_item_ID`) VALUES
+(1,3),
+(2,1),
+(3,1),
+(4,2),
+(5,3);
 --
--- Table structure for table `skill`
+-- Dumping data for table `character_has_skill`
 --
-DROP TABLE IF EXISTS `skill`;
-CREATE TABLE IF NOT EXISTS `skill` (
- `skill_ID` int(11) NOT NULL AUTO_INCREMENT,
- `name` varchar(30) NOT NULL,
- `description` varchar(45) NOT NULL,
- `level_requirement` int(11) NOT NULL,
- PRIMARY KEY (`skill_ID`),
- UNIQUE KEY `name_UNIQUE` (`name`)
-);
---
--- Constraints for table `character`
---
-ALTER TABLE `character`
- ADD CONSTRAINT `character_ibfk_1` FOREIGN KEY (`account_ID`) REFERENCES `account` (`account_ID`);
---
--- Constraints for table `character_has_items`
---
-ALTER TABLE `character_has_items`
- ADD CONSTRAINT `fk_character_has_items_character1` FOREIGN KEY (`character_character_ID`) REFERENCES `character` (`character_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
- ADD CONSTRAINT `fk_character_has_items_items1` FOREIGN KEY (`items_item_ID`) REFERENCES `items` (`item_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
---
--- Constraints for table `character_has_skill`
---
-ALTER TABLE `character_has_skill`
- ADD CONSTRAINT `fk_character_has_skill_character1` FOREIGN KEY (`character_character_ID`) REFERENCES `character` (`character_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
- ADD CONSTRAINT `fk_character_has_skill_skill1` FOREIGN KEY (`skill_skill_ID`) REFERENCES `skill` (`skill_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
---
--- Constraints for table `items`
---
-ALTER TABLE `items`
- ADD CONSTRAINT `items_ibfk_1` FOREIGN KEY (`ability_ID`) REFERENCES `ability` (`ability_ID`);
+INSERT INTO `character_has_skill` (`character_character_ID`, `skill_skill_ID`) VALUES
+(1,2),
+(2,1),
+(3,2),
+(4,1),
+(5,2);

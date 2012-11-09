@@ -66,6 +66,7 @@ public class Item {
 		this.model = model;
 		this.ability = ability;
 	}
+	
 	///***Public Accessors***///
 	public String getName(){
 		return this.name;

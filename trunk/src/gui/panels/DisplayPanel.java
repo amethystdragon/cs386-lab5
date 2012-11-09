@@ -1046,7 +1046,7 @@ public class DisplayPanel {
 		panel1.add(field);
 		charSubPanel.add(panel1);
 		//add image
-		JLabel image = new JLabel(new ImageIcon(character.getModel()));
+		JLabel image = new JLabel(new ImageIcon("images/" + character.getModel()));
 		image.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		charSubPanel.add(image);
 		topSub.add(charSubPanel);
@@ -1102,7 +1102,7 @@ public class DisplayPanel {
 				try {
 					SearchPanel.setSearchPanel(ObjectType.ACCOUNT);
 					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchUser("", "", "", ""));
-					//TODODisplayPanel.setDisplayPanel;
+					DisplayPanel.setDisplayPanel(Account.findAccount(character.getAccountUsername()));
 					GUI.getGUI().updateMainPanel();
 				} catch (ClassNotFoundException | SQLException e) {
 					e.printStackTrace();
@@ -1229,18 +1229,57 @@ public class DisplayPanel {
 		label = new JLabel("ITEMS OWNED BY CHARACTER");
 		temp1.add(label);
 		itemsPanel.add(temp1, BorderLayout.NORTH);
-		itemsPanel.add(new JScrollBar(), BorderLayout.CENTER);
-		//TODO display items
-		JPanel panel2 = new JPanel(new GridLayout(3,1));
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		try {
+				for(String item: DataAccess.getInstance().searchItem(character.getName())){
+					listModel.addElement(item);
+				}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		final JList<String> itemList = new JList<String>(listModel);
+		itemsPanel.add(itemList, BorderLayout.CENTER);
+		
+		JPanel panel2 = new JPanel(new GridLayout(2,1));
 		JButton addItem = new JButton("Add Item");
-		//TODO add item
+		addItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					JPanel myPanel = new JPanel(new GridLayout(1,2));
+					JComboBox<String> itemBox = new JComboBox<String>();
+					for(Item item: DataAccess.getInstance().searchItem("", null, "")){
+						itemBox.addItem(item.getName());
+					}
+					myPanel.add(new JLabel("Item: "));
+					myPanel.add(itemBox);
+					int result = JOptionPane.showConfirmDialog(null, myPanel,
+							"Please select item to add", JOptionPane.OK_CANCEL_OPTION);
+					if (result == JOptionPane.OK_OPTION) {
+						DataAccess.getInstance().addItemToCharacter(itemBox.getSelectedItem().toString(), character.getName());
+						DisplayPanel.setDisplayPanel(character);
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
 		panel2.add(addItem);
 		JButton displayItem = new JButton("Display Item");
-		//TODO display Item
+		displayItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					if(!itemList.getSelectedValue().isEmpty() && itemList.getSelectedValue() != null){
+						DisplayPanel.setDisplayPanel(DataAccess.getInstance().searchItem(itemList.getSelectedValue(), null, "").get(0));
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
 		panel2.add(displayItem);
-		JButton removeItem = new JButton("Remove Item");
-		//TODO remove Item
-		panel2.add(removeItem);
 		itemsPanel.add(panel2, BorderLayout.SOUTH);
 
 		JPanel skillsPanel = new JPanel(new BorderLayout());
@@ -1248,18 +1287,46 @@ public class DisplayPanel {
 		label = new JLabel("CHARACTER SKILLS");
 		temp2.add(label);
 		skillsPanel.add(temp2, BorderLayout.NORTH);
-		skillsPanel.add(new JScrollBar(), BorderLayout.CENTER);
-		//TODO display skills
-		panel2 = new JPanel(new GridLayout(3,1));
+		DefaultListModel<String> skillModel = new DefaultListModel<String>();
+		try {
+			
+			for(String skill : DataAccess.getInstance().searchSkill(character.getName())){
+				skillModel.addElement(skill);	
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		final JList<String> skillList = new JList<String>(skillModel);
+		skillsPanel.add(skillList, BorderLayout.CENTER);
+		
+		panel2 = new JPanel(new GridLayout(2,1));
 		JButton addSkill = new JButton("Add Skill");
-		//TODO add skill
+		addSkill.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
 		panel2.add(addSkill);
 		JButton displaySkill = new JButton("Display Skill");
-		//TODO display skill
+		displaySkill.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				try{
+					if(!skillList.getSelectedValue().isEmpty() && skillList.getSelectedValue() != null){
+						DisplayPanel.setDisplayPanel(DataAccess.getInstance().searchSkill(itemList.getSelectedValue(), -1, "").get(0));
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
 		panel2.add(displaySkill);
-		JButton removeSkill = new JButton("Remove Skill");
-		//TODO remove skill
-		panel2.add(removeSkill);
 		skillsPanel.add(panel2, BorderLayout.SOUTH);
 
 		bottomPanel.add(itemsPanel);
@@ -1306,8 +1373,7 @@ public class DisplayPanel {
 		panel1.add(field);
 		itemSubPanel.add(panel1);
 		//add image
-		JLabel image = new JLabel(new ImageIcon("defaultitem.jpg"));
-		//TODO image
+		JLabel image = new JLabel(new ImageIcon("images/" + item.getModel()));
 		image.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		itemSubPanel.add(image);
 		topSub.add(itemSubPanel);
@@ -1855,7 +1921,7 @@ public class DisplayPanel {
 				try {
 					SearchPanel.setSearchPanel(ObjectType.ITEM);
 					ResultsPanel.setResultsPanel(DataAccess.getInstance().searchItem(itemList.getSelectedValue(), null, ability.getName()));
-					DisplayPanel.setDisplayPanel(ObjectType.ITEM);
+					DisplayPanel.setDisplayPanel(DataAccess.getInstance().searchItem(itemList.getSelectedValue(), null, "").get(0));
 					GUI.getGUI().updateMainPanel();
 				} catch (ClassNotFoundException | SQLException e) {
 					e.printStackTrace();

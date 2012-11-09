@@ -357,25 +357,16 @@ public class DataAccess {
 	 * @param name
 	 * @return
 	 */
-	public List<Item> searchItem(Character name){
-		String query = "SELECT i.`name`,i.`damage`,i.`armor`,i.`level_requirement`,i.`rarity`,i.`value`,i.`model`,a.`name` " +
-				"FROM `items` i INNER JOIN `ability` a ON a.`ability_ID`=i.`ability_ID` " +
-				"WHERE `item_ID`=(SELECT `items_item_ID` FROM `character_has_items` WHERE `character_character_ID`=" +
+	public List<String> searchItem(String name){
+		String query = "SELECT `name`" +
+				"FROM `items` WHERE `item_ID`=(SELECT `items_item_ID` FROM `character_has_items` WHERE `character_character_ID`=" +
 				"(SELECT `character_ID` FROM `character` WHERE `name`='"+name+"'));";
-		List<Item> items = null;
+		List<String> items = null;
 		try {
 			ResultSet result = query(query);
-			items = new ArrayList<Item>();
+			items = new ArrayList<String>();
 			while(result.next()){
-				items.add(new Item(
-						result.getString(1), 
-						Integer.parseInt(result.getString(2)), 
-						Integer.parseInt(result.getString(3)),
-						Integer.parseInt(result.getString(4)),
-						Rarity.getRarity(result.getString(5)), 
-						Integer.parseInt(result.getString(6)), 
-						result.getString(7), 
-						result.getString(8)));
+				items.add(result.getString(1));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -436,22 +427,20 @@ public class DataAccess {
 	 * @param character
 	 * @return
 	 */
-	public List<Skill> searchSkill(String character){
-		List<Skill> skillList = null;
+	public List<String> searchSkill(String character){
+		List<String> skillList = null;
 		ResultSet result = null;
-		String query = "SELECT `name`,`description`,`level_requirement` FROM `skill` WHERE skill_ID=" +
+		String query = "SELECT `name` FROM `skill` WHERE skill_ID=" +
 				"(SELECT `skill_skill_ID` FROM `character_has_skill` WHERE `character_character_ID`=" +
-				"(SELECT `character_ID` FROM `character` WHERE `name`='Sue'))";
+				"(SELECT `character_ID` FROM `character` WHERE `name`='"+character + "'))";
 
 		// Create a list of the returned skills from the query
 		try {
 			result = query(query);
-			skillList = new ArrayList<Skill>();
+			skillList = new ArrayList<String>();
 			// While there is a next entry, create the skills and add skills to the list
 			while(result.next()) {
-				skillList.add(new Skill(result.getString(2),
-						result.getString(3),
-						Integer.parseInt(result.getString(4))));
+				skillList.add(result.getString(1));
 			}
 		} catch (SQLException e) {
 			System.err.println("Error in Skill Search: " + e.getMessage());
@@ -621,7 +610,7 @@ public class DataAccess {
 					ability.getDescription() + "', " + 
 					ability.getLevelRequirement()+ ");");
 		} catch (SQLException e) {
-			System.err.println("Error in Ability Add: " + e.getMessage());
+			e.printStackTrace();
 		}
 		return execute;
 	}
@@ -671,8 +660,8 @@ public class DataAccess {
 		"', `dexterity`='" +character.getDexterity()+
 		"', `level`='" +character.getLevel()+
 		"', `experience`='" +character.getExperience()+
-		"', `account_account_ID`=(SELECT `account_ID` FROM `Account` WHERE `account_name`='"+character.getAccountUsername()+"'))"+
-		"' WHERE `name`='"+name+"'";
+		"', `account_ID`=(SELECT `account_ID` FROM `account` WHERE `account_name`='"+character.getAccountUsername()+"')"+
+		" WHERE `name`='"+character.getName()+"'";
 		try {
 			return execute(query);
 		} catch (SQLException e) {
@@ -883,7 +872,7 @@ public class DataAccess {
 		try {
 			return execute("INSERT INTO `character_has_items` (`character_character_ID`, `items_item_ID`) VALUES " +
 					"((SELECT `character_ID` FROM `character` WHERE `name`='"+name+"')," +
-					"(SELECT `item_ID` FROM `items` WHERE `name`='"+item+"')),");
+					" (SELECT `item_ID` FROM `items` WHERE `name=''"+item+"'));");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
